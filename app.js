@@ -45,7 +45,7 @@
     toast: document.getElementById("toast"),
     todayTopic: document.getElementById("today-topic"),
     todayTask: document.getElementById("today-task"),
-    todayLink: document.querySelector(".rail-card a")
+    todayLink: document.getElementById("today-link")
   };
 
   let state = loadState();
