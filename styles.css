@@ -157,6 +157,20 @@ button:active,
   white-space: nowrap;
 }
 
+.topbar-link {
+  padding: 7px 9px;
+  border-radius: var(--radius);
+  color: var(--text-soft);
+  font-weight: 650;
+  text-decoration: none;
+  transition: color 140ms ease, background 140ms ease;
+}
+
+.topbar-link:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
 .text-button,
 .nav-toggle,
 .reset-button,

@@ -1,0 +1,1565 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向 3 年 Java 后端工程师的分层面试复习材料，覆盖 Java 8、Java 17/21、JVM、并发、框架、中间件、分布式、系统设计、算法与项目表达。">
+  <title>Java 面试复习册</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="review.css">
+  <script src="review.js" defer></script>
+</head>
+<body class="review-page">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+
+  <header class="topbar">
+    <button class="nav-toggle" id="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
+    <a class="brand" href="#review-overview" aria-label="返回复习册首页">Java 面试复习册</a>
+    <div class="topbar-meta">
+      <span class="version-note">Java 8 主线 · Java 17/21 补充</span>
+      <a class="topbar-link" href="index.html">进入训练台</a>
+      <button class="text-button" id="theme-toggle" type="button" aria-pressed="false">切换主题</button>
+    </div>
+  </header>
+
+  <div class="app-shell review-shell">
+    <aside class="sidebar review-sidebar" id="sidebar" aria-label="复习册目录">
+      <div class="profile-block">
+        <p class="kicker">分层复习</p>
+        <strong>16 章完整知识体系</strong>
+        <span>速读、原理、边界、训练</span>
+      </div>
+
+      <nav class="chapter-nav" aria-label="章节导航">
+        <a href="#review-overview"><span>00</span>知识地图</a>
+        <a href="#review-plan"><span>01</span>复习方法</a>
+        <a href="#java-language"><span>02</span>语言与对象</a>
+        <a href="#collections"><span>03</span>集合与基础能力</a>
+        <a href="#modern-java"><span>04</span>Java 17 / 21</a>
+        <a href="#jvm-review"><span>05</span>JVM 与排障</a>
+        <a href="#concurrency-review"><span>06</span>并发编程</a>
+        <a href="#spring-review"><span>07</span>Spring 体系</a>
+        <a href="#mysql-review"><span>08</span>MySQL</a>
+        <a href="#redis-review"><span>09</span>Redis</a>
+        <a href="#mq-review"><span>10</span>消息队列</a>
+        <a href="#network-review"><span>11</span>网络与 Netty</a>
+        <a href="#distributed-review"><span>12</span>分布式治理</a>
+        <a href="#stability-review"><span>13</span>稳定性工程</a>
+        <a href="#system-design-review"><span>14</span>系统设计</a>
+        <a href="#algorithm-review"><span>15</span>算法与编码</a>
+        <a href="#project-review"><span>16</span>项目与行为面</a>
+        <a href="#official-sources"><span>↗</span>版本与资料</a>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>推荐用法</strong>
+        <p>先看每章速读，再闭卷复述。卡住时回到深入原理，最后去训练台承受追问。</p>
+      </div>
+      <a class="sidebar-action" href="index.html">打开 Java 训练台</a>
+    </aside>
+
+    <main class="review-main" id="main-content" tabindex="-1">
+      <section class="review-hero" id="review-overview">
+        <div class="review-hero-copy">
+          <p class="hero-meta">3 年 Java 后端 · 目标 2-1，冲刺 2-2 · 每周约 7 小时</p>
+          <h1>把零散知识<br>连成可追问的体系</h1>
+          <p class="hero-lead">这份复习册负责理解和串联，训练台负责闭卷输出与压力追问。重点不是背出名词，而是讲清机制、选择、故障与边界。</p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#review-plan">开始复习</a>
+            <a class="secondary-action" href="index.html">进入训练台</a>
+          </div>
+        </div>
+
+        <div class="knowledge-atlas" aria-label="Java 后端知识地图">
+          <div class="atlas-core"><strong>Java 后端工程师</strong><span>语言、运行时、数据、工程、架构、表达</span></div>
+          <div class="atlas-lane"><b>运行基础</b><a href="#java-language">语言与对象</a><a href="#jvm-review">JVM</a><a href="#concurrency-review">并发</a></div>
+          <div class="atlas-lane"><b>应用开发</b><a href="#spring-review">Spring</a><a href="#mysql-review">MySQL</a><a href="#redis-review">Redis</a></div>
+          <div class="atlas-lane"><b>分布式工程</b><a href="#mq-review">MQ</a><a href="#network-review">网络</a><a href="#distributed-review">治理</a></div>
+          <div class="atlas-lane"><b>高阶输出</b><a href="#stability-review">稳定性</a><a href="#system-design-review">系统设计</a><a href="#project-review">项目表达</a></div>
+        </div>
+      </section>
+
+      <section class="review-routes" aria-labelledby="route-title">
+        <div class="section-heading compact-heading">
+          <p class="kicker">跨章节理解</p>
+          <h2 id="route-title">用四条真实问题链串起知识</h2>
+          <p>面试追问通常不会停在一章。沿着场景复习，能把孤立知识变成工程判断。</p>
+        </div>
+        <div class="route-list">
+          <article>
+            <div><span>路线 01</span><h3>一次请求如何完成</h3></div>
+            <p><a href="#network-review">TCP / HTTP</a><i>→</i><a href="#spring-review">Spring MVC</a><i>→</i><a href="#mysql-review">事务与 SQL</a><i>→</i><a href="#redis-review">缓存</a><i>→</i><a href="#mq-review">异步消息</a></p>
+          </article>
+          <article>
+            <div><span>路线 02</span><h3>接口为什么变慢</h3></div>
+            <p><a href="#stability-review">指标定位</a><i>→</i><a href="#jvm-review">GC / 内存</a><i>→</i><a href="#concurrency-review">线程池</a><i>→</i><a href="#mysql-review">执行计划</a><i>→</i><a href="#project-review">证据表达</a></p>
+          </article>
+          <article>
+            <div><span>路线 03</span><h3>系统为什么不稳定</h3></div>
+            <p><a href="#distributed-review">超时重试</a><i>→</i><a href="#mq-review">积压</a><i>→</i><a href="#redis-review">热点击穿</a><i>→</i><a href="#stability-review">降级容灾</a><i>→</i><a href="#project-review">复盘</a></p>
+          </article>
+          <article>
+            <div><span>路线 04</span><h3>如何设计一个新系统</h3></div>
+            <p><a href="#system-design-review">需求与估算</a><i>→</i><a href="#mysql-review">数据模型</a><i>→</i><a href="#redis-review">缓存</a><i>→</i><a href="#mq-review">削峰</a><i>→</i><a href="#stability-review">SLO 与容灾</a></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="review-plan">
+        <header class="chapter-header">
+          <div><span class="chapter-number">01</span><span class="priority">使用说明</span></div>
+          <h2>复习方法与 8 周节奏</h2>
+          <p>每天 1 小时也能进步，关键是让输入、回忆、追问和复测形成闭环。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>先建立正确的训练动作</h3></div>
+          <div class="quick-grid">
+            <article><strong>先输出</strong><p>看到题目先用 90 秒闭卷回答，再看材料。回忆失败本身就是有效训练信号。</p></article>
+            <article><strong>五层回答</strong><p>结论、机制、场景、边界、项目。简单题可缩短，但不要只给名词。</p></article>
+            <article><strong>错题分级</strong><p>不会、概念混淆、追问断裂、表达松散、项目无证据，对应不同修复方式。</p></article>
+            <article><strong>间隔复测</strong><p>当天、次日、三天后、七天后复测。能独立讲清且经得住追问才算掌握。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入方法</span><h3>一小时学习闭环</h3></div>
+          <div class="study-loop" aria-label="一小时学习流程">
+            <div><strong>15 分钟</strong><span>复测旧题</span><small>先闭卷，不翻资料</small></div>
+            <b>→</b>
+            <div><strong>25 分钟</strong><span>理解一个主题</span><small>画机制，找边界</small></div>
+            <b>→</b>
+            <div><strong>15 分钟</strong><span>口述或编码</span><small>录音，限时，追问</small></div>
+            <b>→</b>
+            <div><strong>5 分钟</strong><span>登记错因</span><small>安排下次复测</small></div>
+          </div>
+
+          <div class="week-plan table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>周次</th><th>知识主线</th><th>输出任务</th><th>周末验收</th></tr></thead>
+              <tbody>
+                <tr><td>第 1 周</td><td>Java、集合、现代 Java</td><td>每天 5 题口述，3 道算法</td><td>语言与集合专项面</td></tr>
+                <tr><td>第 2 周</td><td>JVM、并发</td><td>画内存与 AQS，排障命令串讲</td><td>JVM 故障题与并发追问</td></tr>
+                <tr><td>第 3 周</td><td>Spring、MySQL</td><td>事务失效题，执行计划练习</td><td>框架与数据库专项面</td></tr>
+                <tr><td>第 4 周</td><td>Redis、MQ</td><td>一致性、积压、可靠消息方案</td><td>中间件故障设计</td></tr>
+                <tr><td>第 5 周</td><td>网络、Netty、分布式</td><td>一次请求链路，超时重试设计</td><td>稳定性压力面</td></tr>
+                <tr><td>第 6 周</td><td>稳定性、系统设计</td><td>两道 45 分钟设计题</td><td>完整系统设计面</td></tr>
+                <tr><td>第 7 周</td><td>算法、项目、行为面</td><td>项目逐行追问，STAR 录音</td><td>综合技术面</td></tr>
+                <tr><td>第 8 周</td><td>错题与全真复测</td><td>只补高频失分点</td><td>连续三轮模拟</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <article class="concept-block">
+            <h4>掌握度不是“看懂了”</h4>
+            <p><strong>L1</strong> 是看到答案能理解，<strong>L2</strong> 是不看资料能讲主链路，<strong>L3</strong> 是连续追问三层仍能解释选择与边界，<strong>L4</strong> 是能用项目证据说明落地与结果。目标岗位的 P0 内容应稳定达到 L3，项目强项要接近 L4。</p>
+          </article>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>常见无效复习</h3>
+          <ul><li>连续看长文却不做闭卷回忆，产生“我都见过”的熟悉感。</li><li>背标准答案，不理解版本、约束和失败模式，追问一层就断。</li><li>只练技术名词，不练 90 秒结构化表达和手写代码。</li><li>项目数字凭印象补全。无法确认的事实应标记待核实，而不是包装。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>能说出自己的 8 周安排、每日闭环、掌握度标准和错题复测方式。</p></div>
+          <a href="index.html#plan">去训练台查看计划</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="java-language">
+        <header class="chapter-header">
+          <div><span class="chapter-number">02</span><span class="priority">P0 核心</span></div>
+          <h2>Java 语言与对象模型</h2>
+          <p>把“会写 Java”升级为“能解释类型、对象、相等性、不可变性和运行时行为”。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>必须闭卷讲清的八件事</h3></div>
+          <div class="quick-grid">
+            <article><strong>只有值传递</strong><p>基本类型传值本身，对象参数传引用值的副本。方法能改对象状态，不能替换调用方变量。</p></article>
+            <article><strong>相等性契约</strong><p><code>==</code> 比较基本值或引用身份，<code>equals</code> 表达逻辑相等。重写 equals 时必须同步重写 hashCode。</p></article>
+            <article><strong>不可变对象</strong><p>状态构造后不变，字段通常 final，不暴露可变内部对象。利于线程安全、缓存和 Map 键稳定。</p></article>
+            <article><strong>String</strong><p>不可变，字符串常量池复用字面量。频繁拼接用 StringBuilder，跨线程共享拼接才考虑 StringBuffer。</p></article>
+            <article><strong>重载与重写</strong><p>重载在编译期按参数签名选择，重写在运行期按实际类型动态分派。静态、私有方法不参与普通动态分派。</p></article>
+            <article><strong>抽象边界</strong><p>接口表达能力契约，抽象类承载共享状态与模板。优先组合以降低继承耦合。</p></article>
+            <article><strong>final</strong><p>修饰变量表示只赋值一次，修饰方法禁止重写，修饰类禁止继承。引用 final 不代表对象内部不可变。</p></article>
+            <article><strong>装箱陷阱</strong><p>包装类型可为 null，拆箱可能 NPE；Integer 小值缓存不能作为相等性依据，比较数值用 equals 或拆箱。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>从源码到对象的一条主线</h3></div>
+          <div class="object-journey" aria-label="Java 代码到对象的过程">
+            <span>Java 源码</span><b>javac</b><span>字节码</span><b>类加载</b><span>Class 元数据</span><b>new</b><span>分配内存</span><b>构造</b><span>可用对象</span>
+          </div>
+
+          <article class="concept-block">
+            <h4>对象创建与初始化顺序</h4>
+            <p>首次主动使用类时触发加载、验证、准备、解析和初始化。创建对象时先分配并清零实例内存，再设置对象头，随后按继承关系执行父类与子类的实例初始化和构造器。面试中要区分“类初始化”和“对象初始化”，也不要把 HotSpot 的具体布局当成 Java 语言规范承诺。</p>
+          </article>
+
+          <article class="concept-block split-concept">
+            <div><h4>equals 与 hashCode 为什么绑定</h4><p>哈希容器先用 hash 缩小桶范围，再在候选元素中做相等性判断。如果两个逻辑相等对象产生不同 hash，它们可能进入不同桶，导致查找失败。契约要求 equals 相等时 hashCode 必须相等，反向不要求。</p></div>
+            <pre><code>public final class UserId {
+    private final long value;
+
+    @Override
+    public boolean equals(Object other) {
+        return this == other
+            || other instanceof UserId
+            &amp;&amp; value == ((UserId) other).value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(value);
+    }
+}</code></pre>
+          </article>
+
+          <article class="concept-block">
+            <h4>深拷贝、浅拷贝与防御性复制</h4>
+            <p>浅拷贝只复制当前对象字段，字段中的可变引用仍共享；深拷贝递归复制对象图，但成本高且语义容易含糊。工程上更常见的做法是定义不可变值对象，在构造和 getter 边界做防御性复制，并明确所有权，而不是到处调用 clone。</p>
+          </article>
+
+          <div class="comparison-grid" aria-label="抽象方式对比">
+            <article><h4>继承</h4><p>表达 is-a，能复用受保护实现，但父类变化会向下传播。适合稳定模板，不适合仅为复用几行代码。</p></article>
+            <article><h4>组合</h4><p>表达 has-a，通过委托复用能力，依赖可替换、测试更容易。默认优先选择。</p></article>
+            <article><h4>接口</h4><p>定义对外能力，可多实现。Java 8 默认方法用于接口演进，但不要把接口变成状态容器。</p></article>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>不要说“对象按引用传递”。Java 传递的是引用值的副本。</li><li>不可变不等于所有字段必须是基本类型，关键是外部无法观察到状态变化。</li><li>final 提供初始化安全性相关语义，但不能自动让整个对象线程安全。</li><li>枚举适合有限常量及其行为，不适合承载频繁变化的数据库配置。</li><li>反序列化、反射或 Unsafe 可能绕过普通构造路径，框架场景要单独分析。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>用 90 秒解释值传递、相等性和不可变对象，再回答一个 Map 键被修改后的故障题。</p></div>
+          <a href="index.html#java">进入 Java 基础训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="collections">
+        <header class="chapter-header">
+          <div><span class="chapter-number">03</span><span class="priority">P0 核心</span></div>
+          <h2>集合、泛型、异常、反射与 IO</h2>
+          <p>这一章看似零散，实际在考数据结构、类型约束、扩展机制和资源管理。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>按场景选择工具</h3></div>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>需求</th><th>首选</th><th>核心原因</th><th>主要边界</th></tr></thead>
+              <tbody>
+                <tr><td>随机访问、尾部追加</td><td>ArrayList</td><td>连续数组，局部性好，按下标 O(1)</td><td>中间插删需要搬移，扩容有复制成本</td></tr>
+                <tr><td>键值查询</td><td>HashMap</td><td>均摊 O(1)，冲突时链表或树</td><td>非线程安全，键应保持 hash 稳定</td></tr>
+                <tr><td>有序键范围查询</td><td>TreeMap</td><td>红黑树维持排序，操作 O(log n)</td><td>比较器必须与相等语义协调</td></tr>
+                <tr><td>高并发键值访问</td><td>ConcurrentHashMap</td><td>Java 8 使用 CAS、volatile 与桶级同步协作</td><td>复合操作要用 compute 等原子 API</td></tr>
+                <tr><td>生产消费</td><td>BlockingQueue</td><td>显式容量、阻塞与唤醒语义</td><td>无界队列会把过载变成内存风险</td></tr>
+                <tr><td>最近最少使用</td><td>LinkedHashMap</td><td>哈希查询加访问顺序双向链</td><td>并发访问需要额外保护</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>HashMap 主链路</h3></div>
+          <div class="hashmap-flow" aria-label="HashMap put 流程">
+            <span>计算扰动 hash</span><b>→</b><span><code>(n - 1) &amp; hash</code> 定位</span><b>→</b><span>空桶直接插入</span><b>→</b><span>同键覆盖</span><b>→</b><span>链表或树追加</span><b>→</b><span>超过阈值扩容</span>
+          </div>
+          <article class="concept-block">
+            <h4>容量为什么是 2 的幂</h4>
+            <p>当数组长度是 2 的幂时，取模可以转化为位与。Java 8 扩容为两倍后，节点只需判断旧容量对应的那一位：为 0 留在原索引，为 1 移动到原索引加旧容量。这样无需重新做完整取模，也能保持链内相对顺序。默认负载因子 0.75 是空间与冲突概率的折中，不是所有场景的最佳值。</p>
+          </article>
+          <article class="concept-block">
+            <h4>树化不是达到 8 就一定发生</h4>
+            <p>Java 8 中桶内节点达到树化阈值时，还要看表容量是否足够。容量较小时优先扩容，因为分散元素通常比维护红黑树更划算。具体阈值属于实现细节，回答时既要知道常见实现，也要标明版本边界。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>类型系统</span><h3>泛型与 PECS</h3></div>
+          <article class="concept-block split-concept">
+            <div><h4>类型擦除</h4><p>泛型主要在编译期提供类型检查，运行时通常擦除为上界并插入必要的强制转换。它解释了为什么不能直接 <code>new T()</code>、不能创建普通泛型数组，也解释了桥接方法如何保持多态。</p></div>
+            <pre><code>static &lt;T&gt; void copy(
+        List&lt;? extends T&gt; source,
+        List&lt;? super T&gt; target) {
+    for (T item : source) {
+        target.add(item);
+    }
+}</code></pre>
+          </article>
+          <div class="pecs-line"><span><strong>Producer Extends</strong> 只保证安全读取为 T</span><span><strong>Consumer Super</strong> 可以安全写入 T</span></div>
+
+          <div class="block-title subsection-title"><span>错误处理</span><h3>异常设计与资源关闭</h3></div>
+          <div class="comparison-grid">
+            <article><h4>受检异常</h4><p>调用方被强制处理或声明，适合明确可恢复、需要决策的失败。滥用会造成层层 throws 和无意义包装。</p></article>
+            <article><h4>运行时异常</h4><p>适合编程错误、前置条件破坏或统一业务异常体系。不是“不需要处理”，而是由合适边界统一转换。</p></article>
+            <article><h4>try-with-resources</h4><p>按声明逆序关闭 AutoCloseable 资源。主体异常优先，关闭异常进入 suppressed，排障时不要忽略。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>扩展与 IO</span><h3>反射、SPI 与 NIO</h3></div>
+          <article class="concept-block">
+            <h4>反射和 SPI 解决不同问题</h4>
+            <p>反射让程序在运行时查看类型、构造对象和调用成员；SPI 通过约定的服务描述发现实现，常用于驱动、日志或插件。SPI 涉及类加载器可见性，容器中常借助线程上下文类加载器跨越父加载器无法看见子路径实现的问题。</p>
+          </article>
+          <div class="io-model" aria-label="IO 模型关系">
+            <div><strong>传统阻塞 IO</strong><span>连接通常绑定处理线程</span><small>简单，连接多时线程成本高</small></div>
+            <div><strong>NIO</strong><span>Channel + Buffer + Selector</span><small>少量线程管理大量就绪连接</small></div>
+            <div><strong>异步 IO</strong><span>提交后由完成事件通知</span><small>平台实现与回调模型需要分析</small></div>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>LinkedList 单次节点插入是 O(1)，但找到位置仍可能是 O(n)，业务中通常不因“插入多”就选它。</li><li>Collections.synchronizedMap 只包装单次操作，迭代和复合逻辑仍需要外部同步。</li><li>ConcurrentHashMap 不允许 null，避免并发下无法区分“不存在”和“值为 null”。</li><li>Stream 强调声明式数据处理，不自动更快。并行流使用公共线程池，服务端需要谨慎。</li><li>捕获 Exception 后只打印消息会丢失堆栈与上下文，转换异常必须保留 cause。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>手画 HashMap put 与 resize，解释 PECS，并给出资源关闭和异常转换的工程写法。</p></div>
+          <a href="index.html#java">进入集合与语言训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="modern-java">
+        <header class="chapter-header">
+          <div><span class="chapter-number">04</span><span class="priority">P1 版本能力</span></div>
+          <h2>Java 8 主线与 Java 17 / 21</h2>
+          <p>先掌握生产中最常见的 Java 8，再理解 LTS 版本带来的语言表达和并发模型变化。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>版本特性分层记忆</h3></div>
+          <div class="version-lanes">
+            <article><span>Java 8</span><h4>函数式与现代基础库</h4><p>Lambda、Stream、Optional、接口默认方法、新日期时间 API、CompletableFuture。</p></article>
+            <article><span>Java 17</span><h4>更清晰的数据与类型建模</h4><p>record、sealed class、模式匹配 instanceof、switch 表达式、文本块。</p></article>
+            <article><span>Java 21</span><h4>并发与模式匹配成熟</h4><p>虚拟线程、record pattern、switch 模式匹配、Sequenced Collections、分代 ZGC。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>Java 8：Stream 不是循环的语法糖</h3></div>
+          <article class="concept-block">
+            <h4>惰性流水线与终止操作</h4>
+            <p>中间操作描述转换，通常在终止操作到来后才开始拉取数据。无状态操作如 map、filter 易于流水；sorted、distinct 等有状态操作可能需要缓存。Stream 默认只消费一次，不应在操作中修改外部共享状态。并行流是否获益取决于数据规模、拆分成本、计算强度和公共线程池竞争。</p>
+          </article>
+          <article class="concept-block split-concept">
+            <div><h4>Optional 的正确边界</h4><p>适合表达方法可能没有返回值，不宜普遍作为实体字段、方法参数或集合元素。不要用 <code>isPresent + get</code> 重写 if，优先使用 map、flatMap、orElseGet 等组合操作。</p></div>
+            <pre><code>return repository.findById(id)
+    .filter(User::isActive)
+    .map(UserView::from)
+    .orElseThrow(UserNotFound::new);</code></pre>
+          </article>
+
+          <div class="block-title subsection-title"><span>Java 17</span><h3>让领域模型表达约束</h3></div>
+          <div class="modern-model" aria-label="Java 17 类型建模">
+            <div><strong>record</strong><span>简洁表达浅不可变数据载体</span><small>自动生成访问器、equals、hashCode、toString</small></div>
+            <div><strong>sealed</strong><span>限制允许继承的类型集合</span><small>适合封闭领域状态与穷举处理</small></div>
+            <div><strong>模式匹配</strong><span>类型判断与绑定合并</span><small>减少强制转换和分支样板</small></div>
+          </div>
+          <article class="concept-block">
+            <h4>record 是浅不可变，不是深不可变</h4>
+            <p>record 组件引用不能重新指向，但组件引用的 List 等对象仍可被修改。若领域要求真正不可变，应在紧凑构造器中 <code>List.copyOf</code>，并避免泄漏可变对象。record 适合值语义，不适合依赖可变身份与代理增强的实体。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>Java 21</span><h3>虚拟线程改变等待成本，不改变资源上限</h3></div>
+          <div class="virtual-thread-diagram" aria-label="平台线程与虚拟线程关系">
+            <div class="virtual-many"><span>虚拟线程 A</span><span>虚拟线程 B</span><span>虚拟线程 C</span><span>更多任务</span></div>
+            <b>由 JVM 调度挂载</b>
+            <div class="carrier-few"><span>载体线程 1</span><span>载体线程 2</span></div>
+            <b>运行于</b>
+            <div class="cpu-box">CPU 核心</div>
+          </div>
+          <article class="concept-block">
+            <h4>适合大量阻塞型并发，不负责让 CPU 计算变快</h4>
+            <p>虚拟线程让“一个请求一个线程”的同步代码在大量等待场景下更可扩展。它提升的是吞吐与可并发等待数量，不会缩短 CPU 密集任务。不要把虚拟线程池化来限制并发，应使用信号量等机制保护数据库连接、下游配额等稀缺资源。</p>
+          </article>
+          <article class="concept-block">
+            <h4>Java 21 的版本边界</h4>
+            <p>在 Java 21 中，虚拟线程在某些 synchronized 块内执行阻塞操作或执行 native / foreign 调用时可能发生 pinning，载体线程不能及时释放。应通过 JFR、线程转储和压测发现，而不是因此全面禁用 synchronized。后续 JDK 对该行为有改进，面试回答必须说明所讨论的版本。</p>
+          </article>
+
+          <div class="feature-status table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>能力</th><th>Java 21 状态</th><th>面试表达</th></tr></thead>
+              <tbody>
+                <tr><td>Virtual Threads</td><td>正式</td><td>适合 I/O 等待密集型吞吐，不等于 CPU 加速</td></tr>
+                <tr><td>Record Patterns</td><td>正式</td><td>配合类型模式解构数据</td></tr>
+                <tr><td>Pattern Matching for switch</td><td>正式</td><td>结合 sealed 类型做可穷举分支</td></tr>
+                <tr><td>Sequenced Collections</td><td>正式</td><td>统一首尾与反向视图接口</td></tr>
+                <tr><td>Structured Concurrency</td><td>预览</td><td>不能当作 Java 21 默认稳定 API</td></tr>
+                <tr><td>Scoped Values</td><td>预览</td><td>说明试验状态及与 ThreadLocal 的目标差异</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>不要把 LTS 等同于“所有新特性都正式”，预览能力需要显式开启且可能变化。</li><li>record 自动生成的是基于组件的值语义，但组件仍可能引用可变对象。</li><li>虚拟线程不应配合传统固定大小线程池使用来模拟平台线程稀缺性。</li><li>ThreadLocal 在线程池与虚拟线程场景都要注意生命周期，使用后及时 remove。</li><li>升级 JDK 不能只看编译通过，还要验证 GC、反射、模块封装、代理、监控和第三方依赖。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>分别用一句话讲清 Java 8、17、21 的价值，再说明虚拟线程适用场景和两个边界。</p></div>
+          <a href="index.html#java">进入现代 Java 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="jvm-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">05</span><span class="priority">P0 核心</span></div>
+          <h2>JVM、GC 与内存排障</h2>
+          <p>高分回答不是背内存区域，而是把对象、可达性、分配、回收和证据链连起来。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>JVM 主干知识</h3></div>
+          <div class="quick-grid">
+            <article><strong>运行时区域</strong><p>堆存对象，线程栈存栈帧，本地方法栈服务 native，程序计数器记录执行位置，元空间存类元数据。</p></article>
+            <article><strong>对象分配</strong><p>通常先在线程本地分配缓冲区或 Eden 分配，大对象、分配失败和收集器策略会改变路径。</p></article>
+            <article><strong>可达性分析</strong><p>从 GC Roots 向下搜索，无法到达的对象才有资格回收。引用计数不能可靠处理循环引用。</p></article>
+            <article><strong>分代假设</strong><p>多数对象朝生夕灭，少数长期存活。年轻代高频回收，晋升后由老年代机制处理。</p></article>
+            <article><strong>类加载</strong><p>加载、链接、初始化。双亲委派降低类型重复和核心类被替换风险，但 SPI、容器、热部署有特殊需求。</p></article>
+            <article><strong>排障原则</strong><p>先保现场与业务，再用指标缩小范围，最后通过线程栈、GC 日志、堆转储或事件记录证明。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>运行时内存与线程关系</h3></div>
+          <div class="memory-layout" aria-label="JVM 运行时内存区域">
+            <div class="shared-memory"><strong>进程共享</strong><span>Java 堆：对象与数组</span><span>元空间：类元数据</span><span>代码缓存：JIT 编译代码</span></div>
+            <div class="thread-memory"><strong>线程私有</strong><span>程序计数器</span><span>Java 虚拟机栈</span><span>本地方法栈</span></div>
+            <div class="outside-memory"><strong>堆外与进程内</strong><span>DirectByteBuffer</span><span>线程栈本地内存</span><span>JNI 与映射文件</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>对象一定在堆上吗</h4>
+            <p>从 Java 语言语义看，开发者通常把对象视作堆对象；JIT 通过逃逸分析可能做标量替换或消除分配，使物理实现不同。面试不要武断说“对象都在堆上”或“对象会被分配到栈上”，应区分语言模型和编译优化。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>GC</span><h3>从存活判断到收集器选择</h3></div>
+          <div class="gc-journey" aria-label="垃圾回收逻辑">
+            <span>GC Roots</span><b>可达性</b><span>标记存活</span><b>选择算法</b><span>复制 / 清除 / 整理</span><b>处理引用</b><span>回收与重用</span>
+          </div>
+          <div class="collector-matrix table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>收集器</th><th>主要目标</th><th>关键机制</th><th>适用判断</th></tr></thead>
+              <tbody>
+                <tr><td>Serial</td><td>简单、低资源</td><td>单线程收集</td><td>小堆、客户端或工具进程</td></tr>
+                <tr><td>Parallel</td><td>吞吐优先</td><td>并行 STW 回收</td><td>批处理，能接受较长停顿</td></tr>
+                <tr><td>G1</td><td>可预测停顿与吞吐平衡</td><td>Region、并发标记、混合回收</td><td>常见服务端通用选择，仍需压测</td></tr>
+                <tr><td>ZGC</td><td>大堆低停顿</td><td>并发回收、着色指针等</td><td>对尾延迟敏感且愿意验证吞吐成本</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <article class="concept-block">
+            <h4>Stop The World 为什么无法完全消失</h4>
+            <p>并发收集仍需要在某些阶段获得一致视图或处理根集合，因而存在短暂停顿。评价 GC 不能只看平均停顿，要一起看 P99、吞吐损失、分配速率、堆占用、CPU 和业务 SLA。调优顺序应先找对象分配与生命周期问题，再讨论参数。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>类加载</span><h3>双亲委派与破坏场景</h3></div>
+          <div class="classloader-tree" aria-label="类加载器层级">
+            <div><strong>Bootstrap</strong><span>加载核心基础类</span></div><b>↑ 委派</b>
+            <div><strong>Platform</strong><span>加载平台模块</span></div><b>↑ 委派</b>
+            <div><strong>Application</strong><span>加载应用类路径</span></div><b>↑ 请求</b>
+            <div><strong>自定义加载器</strong><span>隔离、热部署、插件</span></div>
+          </div>
+          <p class="diagram-caption">同名类只有在类全名和定义它的类加载器都相同时，JVM 才认为是同一类型。</p>
+
+          <div class="block-title subsection-title"><span>排障</span><h3>CPU、卡顿、OOM 的证据路径</h3></div>
+          <div class="incident-paths">
+            <article><h4>CPU 高</h4><p><code>top</code> 定位进程与线程，线程 ID 转十六进制，在 <code>jstack</code> 中找对应 nid，结合多次栈和火焰图确认热点。</p></article>
+            <article><h4>频繁 GC</h4><p>看 GC 日志或 <code>jstat -gcutil</code> 的频率、回收前后占用和晋升，再分析分配速率、大对象、缓存和堆大小。</p></article>
+            <article><h4>堆 OOM</h4><p>保留 Heap Dump，用直方图初筛，再用 MAT 等工具分析 dominator tree、retained size 和到 GC Root 的引用链。</p></article>
+            <article><h4>非堆 OOM</h4><p>检查 direct memory、线程数量与栈、元空间、native 分配和容器限制。仅看 Java heap 可能得出错误结论。</p></article>
+          </div>
+          <pre><code># 示例命令，生产执行前先评估开销
+jcmd &lt;pid&gt; VM.flags
+jcmd &lt;pid&gt; GC.heap_info
+jcmd &lt;pid&gt; Thread.print
+jstat -gcutil &lt;pid&gt; 1000 20
+jmap -histo:live &lt;pid&gt; | head -30
+
+# 建议启动参数，路径与磁盘容量需提前规划
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/logs/heap.bin</code></pre>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与生产边界</h3>
+          <ul><li>持续 Full GC 不是 OOM 的同义词，它可能是内存压力、显式 System.gc、元空间或晋升失败等信号。</li><li><code>jmap -heap</code> 主要展示堆配置与概况，定位“哪个对象被谁持有”需要对象直方图、Heap Dump 和引用链。</li><li><code>jmap -histo:live</code> 可能触发 Full GC，堆转储也可能造成明显停顿和磁盘压力，生产环境先评估。</li><li>容器内存包含堆、元空间、线程栈、直接内存和 native 开销，<code>-Xmx</code> 不能贴满 limit。</li><li>GC 参数没有万能配置，必须用同一流量模型、堆规模和 SLA 做对比压测。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>画出内存区域与一次 Young GC，再对 CPU 高、频繁 Full GC、容器 OOM 各给一条完整证据链。</p></div>
+          <a href="index.html#jvm">进入 JVM 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="concurrency-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">06</span><span class="priority">P0 核心</span></div>
+          <h2>JMM、锁、AQS、线程池与异步</h2>
+          <p>并发题的核心是三件事：共享状态是否可见、操作是否原子、执行顺序是否受约束。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>并发八问</h3></div>
+          <div class="quick-grid">
+            <article><strong>volatile</strong><p>保证可见性并约束特定重排序，不让复合读改写自动变成原子操作。</p></article>
+            <article><strong>synchronized</strong><p>互斥加 happens-before，锁对象决定保护范围。实例锁与类锁不是同一把锁。</p></article>
+            <article><strong>CAS</strong><p>比较并交换实现乐观更新，可能自旋浪费、出现 ABA，需要版本戳或不同设计。</p></article>
+            <article><strong>AQS</strong><p>用 state 表示同步状态，以 FIFO 等待队列组织竞争线程，子类定义获取与释放规则。</p></article>
+            <article><strong>线程池</strong><p>先核心线程，再入队，再扩到最大线程，最后拒绝。队列选择直接决定过载表现。</p></article>
+            <article><strong>ThreadLocal</strong><p>数据挂在线程的 ThreadLocalMap 中，线程池复用时必须清理，避免串数据和内存滞留。</p></article>
+            <article><strong>CompletableFuture</strong><p>编排依赖、组合结果和异常，重点是执行器、超时、异常传播和上下文传递。</p></article>
+            <article><strong>虚拟线程</strong><p>降低阻塞等待的线程成本，但数据库连接、下游容量和 CPU 仍是硬上限。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>Happens-before 是可见性的推理规则</h3></div>
+          <div class="hb-map" aria-label="常用 happens-before 规则">
+            <span>程序次序</span><span>解锁 → 后续加锁</span><span>volatile 写 → 后续读</span><span>start 前 → 新线程动作</span><span>线程动作 → join 返回</span><span>传递性</span>
+          </div>
+          <article class="concept-block">
+            <h4>volatile 为什么不能保证 i++</h4>
+            <p><code>i++</code> 包含读取、计算、写回三个动作。volatile 能让线程看到较新的值，也禁止部分重排序，但两个线程仍可能读取同一个旧值后分别写回。需要 synchronized、Lock、AtomicInteger 或把状态所有权收拢到单线程。</p>
+          </article>
+          <article class="concept-block split-concept">
+            <div><h4>双重检查为什么要 volatile</h4><p>对象创建可抽象为分配内存、初始化、发布引用。若允许重排序，另一个线程可能看到非空引用却观察到未完成初始化。volatile 发布与读取建立必要的可见性和顺序约束。</p></div>
+            <pre><code>private static volatile Client instance;
+
+static Client getInstance() {
+    if (instance == null) {
+        synchronized (Client.class) {
+            if (instance == null) {
+                instance = new Client();
+            }
+        }
+    }
+    return instance;
+}</code></pre>
+          </article>
+
+          <div class="block-title subsection-title"><span>AQS</span><h3>独占锁的一次竞争</h3></div>
+          <div class="aqs-flow" aria-label="AQS 获取锁流程">
+            <span>尝试 CAS 改 state</span><b>失败</b><span>入同步队列</span><b>检查前驱</b><span>安全挂起</span><b>前驱释放</b><span>被唤醒后重试</span><b>成功</b><span>成为持有者</span>
+          </div>
+          <article class="concept-block">
+            <h4>公平与非公平</h4>
+            <p>公平锁在尝试获取前检查是否有排队前驱，减少插队但增加调度与切换成本。非公平锁允许刚到的线程直接竞争，通常吞吐更高但等待方可能更久。ReentrantLock 还提供可中断、超时获取和多个 Condition，选择它不是因为 synchronized “低级”。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>线程池</span><h3>容量要从资源与过载反推</h3></div>
+          <div class="pool-lifecycle" aria-label="ThreadPoolExecutor 提交任务流程">
+            <span>任务到达</span><b>核心线程未满</b><span>新建核心线程</span><b>否则</b><span>进入工作队列</span><b>队列满</b><span>扩到最大线程</span><b>仍满</b><span>拒绝策略</span>
+          </div>
+          <div class="formula-block">
+            <code>CPU 密集近似：线程数 ≈ CPU 核数 + 1</code>
+            <code>I/O 密集初估：线程数 ≈ 核数 × (1 + 等待时间 / 计算时间)</code>
+            <p>公式只用于起点。最终值由压测中的吞吐、P99、CPU、队列等待、连接池和下游容量决定。</p>
+          </div>
+          <article class="concept-block">
+            <h4>有界队列是一种背压</h4>
+            <p>无界队列让最大线程数失去扩容意义，并把过载隐藏成越来越长的等待与内存占用。有界队列配合明确拒绝策略，能更早暴露容量上限。CallerRunsPolicy 可让提交方减速，但如果提交方是关键网络线程，也可能扩大故障，必须结合线程角色分析。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>并发工具</span><h3>按协调问题选择</h3></div>
+          <div class="tool-matrix table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>工具</th><th>解决的问题</th><th>一句边界</th></tr></thead>
+              <tbody>
+                <tr><td>CountDownLatch</td><td>一个或多个线程等待一组事件完成</td><td>一次性，计数不能重置</td></tr>
+                <tr><td>CyclicBarrier</td><td>一组线程在阶段点互相等待</td><td>屏障动作失败会破坏本轮</td></tr>
+                <tr><td>Semaphore</td><td>限制同时访问稀缺资源的数量</td><td>许可数不是任务线程数建议值</td></tr>
+                <tr><td>Phaser</td><td>动态参与者的多阶段协作</td><td>更灵活，也更难维护</td></tr>
+                <tr><td>StampedLock</td><td>读多写少，支持乐观读</td><td>不可重入，乐观读必须 validate</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>ConcurrentHashMap 的线程安全只覆盖它提供的单次或原子复合 API，先 get 再 put 仍可能竞态。</li><li>锁的范围应覆盖不变量，不是越小越好。拆得过小可能破坏跨字段一致性。</li><li>在线程池任务中吞掉 InterruptedException 会破坏取消协议，通常应恢复中断标记或向上转换。</li><li>CompletableFuture 默认异步方法可能使用公共 ForkJoinPool，服务端应明确执行器和容量。</li><li>并行化会扩大数据库连接和下游 QPS，必须设置并发上限、超时与部分失败策略。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>解释 volatile、synchronized、AQS 和线程池拒绝全过程，再为一个 I/O 接口给出可验证的线程池估算。</p></div>
+          <a href="index.html#concurrency">进入并发训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="spring-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">07</span><span class="priority">P0 核心</span></div>
+          <h2>Spring、Spring MVC、Boot 与 MyBatis</h2>
+          <p>框架题要从代理和生命周期出发，解释“为什么生效”和“为什么失效”。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>四条框架主线</h3></div>
+          <div class="quick-grid">
+            <article><strong>IoC</strong><p>容器负责对象创建、依赖装配与生命周期，业务依赖抽象而不是主动查找具体实现。</p></article>
+            <article><strong>AOP</strong><p>通过代理把事务、监控、鉴权等横切逻辑织入方法调用，代理边界决定能否拦截。</p></article>
+            <article><strong>MVC</strong><p>请求经 DispatcherServlet、映射器、适配器、控制器、参数解析和返回值处理完成。</p></article>
+            <article><strong>Boot</strong><p>自动配置依据类路径、属性和已有 Bean 做条件装配，starter 管依赖，配置属性承载外部配置。</p></article>
+            <article><strong>事务</strong><p>代理在方法前开启或加入事务，正常返回提交，匹配回滚规则的异常退出则回滚。</p></article>
+            <article><strong>MyBatis</strong><p>Mapper 是动态代理，SQL 经 Executor、StatementHandler、ParameterHandler、ResultSetHandler 执行与映射。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>Bean 从定义到可用</h3></div>
+          <div class="bean-lifecycle" aria-label="Spring Bean 生命周期">
+            <span>读取 BeanDefinition</span><b>→</b><span>实例化</span><b>→</b><span>依赖注入</span><b>→</b><span>Aware 回调</span><b>→</b><span>前置处理</span><b>→</b><span>初始化</span><b>→</b><span>后置处理 / 代理</span><b>→</b><span>销毁</span>
+          </div>
+          <article class="concept-block">
+            <h4>循环依赖为什么不是“三级缓存万能解决”</h4>
+            <p>经典 Spring 单例 setter 循环依赖可通过提前暴露对象工厂和早期引用处理，并在需要时保持代理一致性。构造器循环依赖无法先得到实例，prototype 也不走同样的单例缓存。更重要的是，循环依赖常提示职责拆分不清，应优先改设计而不是依赖容器兜底。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>AOP 与事务</span><h3>一次声明式事务调用</h3></div>
+          <div class="transaction-flow" aria-label="Spring 声明式事务流程">
+            <span>调用代理对象</span><b>→</b><span>事务拦截器读取属性</span><b>→</b><span>获取或绑定连接</span><b>→</b><span>执行业务方法</span><b>→</b><span>提交或回滚</span><b>→</b><span>清理线程资源</span>
+          </div>
+          <div class="propagation-table table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>传播行为</th><th>已有事务</th><th>没有事务</th><th>典型理解</th></tr></thead>
+              <tbody>
+                <tr><td>REQUIRED</td><td>加入</td><td>新建</td><td>默认，多个方法组成同一原子边界</td></tr>
+                <tr><td>REQUIRES_NEW</td><td>挂起外层，新建</td><td>新建</td><td>独立提交，但会额外占连接</td></tr>
+                <tr><td>NESTED</td><td>保存点嵌套</td><td>新建</td><td>依赖事务管理器与数据库支持</td></tr>
+                <tr><td>SUPPORTS</td><td>加入</td><td>非事务执行</td><td>只读查询的弱边界之一</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <article class="concept-block">
+            <h4>事务失效从代理边界排查</h4>
+            <p>常见原因包括：同类内部调用绕过代理、对象并非容器 Bean、方法不满足代理拦截条件、异常被吞或不匹配回滚规则、新线程脱离原事务上下文、数据库引擎不支持事务、传播行为与预期不同。不要只背“private 方法不生效”，要先确认代理类型、调用路径和事务日志。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>Web 请求</span><h3>Spring MVC 调用链</h3></div>
+          <div class="mvc-flow" aria-label="Spring MVC 请求处理链">
+            <span>Filter</span><b>→</b><span>DispatcherServlet</span><b>→</b><span>HandlerMapping</span><b>→</b><span>Interceptor.pre</span><b>→</b><span>HandlerAdapter</span><b>→</b><span>Controller</span><b>→</b><span>返回值处理</span><b>→</b><span>Interceptor.after</span>
+          </div>
+          <article class="concept-block">
+            <h4>Filter、Interceptor、AOP 的选择</h4>
+            <p>Filter 属于 Servlet 容器边界，适合编码、跨域、通用安全和原始请求处理；Interceptor 位于 Spring MVC Handler 周围，适合控制器级上下文；AOP 面向 Spring Bean 方法，适合业务服务的横切逻辑。三者覆盖层级不同，不应仅按“都能记录日志”混用。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>Boot 与 MyBatis</span><h3>自动配置和数据访问</h3></div>
+          <div class="comparison-grid">
+            <article><h4>条件装配</h4><p>自动配置类基于类是否存在、Bean 是否缺失、属性是否开启等条件生效。排障要看条件评估报告，不是猜 starter。</p></article>
+            <article><h4>配置优先级</h4><p>命令行、系统属性、环境变量、外部和包内配置等有覆盖规则。敏感信息不应明文提交到仓库。</p></article>
+            <article><h4>MyBatis 缓存</h4><p>一级缓存默认在 SqlSession 范围，二级缓存在 Mapper 命名空间并需显式考虑。分布式一致性场景通常不依赖它解决业务缓存。</p></article>
+          </div>
+          <article class="concept-block">
+            <h4>连接池不是越大越好</h4>
+            <p>连接池上限应受数据库最大连接、实例数、事务时长和并发容量约束。池过小会等待，过大会让数据库上下文切换、锁竞争与内存恶化。重点指标包括活跃连接、等待数、获取耗时、超时和慢事务。</p>
+          </article>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>Spring 单例表示容器内通常一个实例，不意味着其可变字段线程安全。</li><li>@Async、线程池和消息消费会切换线程，ThreadLocal 与事务上下文不会自动完整传播。</li><li>REQUIRES_NEW 在外层事务尚占用连接时再申请连接，连接池容量不足可能互相等待。</li><li>Controller 不应承载复杂事务编排，事务边界通常放在应用服务层更清晰。</li><li>MyBatis 的 <code>#{}</code> 使用参数绑定，<code>${}</code> 是文本替换，后者必须对白名单字段严格控制。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>从一次请求讲到事务提交，并对自调用、新线程、异常被捕获三种失效逐一给出验证办法。</p></div>
+          <a href="index.html#spring">进入 Spring 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="mysql-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">08</span><span class="priority">P0 核心</span></div>
+          <h2>MySQL 索引、事务、锁、日志与复制</h2>
+          <p>数据库面试要把 SQL、B+ 树、MVCC、锁与日志组合成完整的读写路径。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>高频结论</h3></div>
+          <div class="quick-grid">
+            <article><strong>B+ 树</strong><p>高扇出降低树高，内部节点导航，叶子有序相连，兼顾点查与范围查。</p></article>
+            <article><strong>聚簇索引</strong><p>InnoDB 主键索引叶子存整行，二级索引叶子存索引列和主键，必要时回表。</p></article>
+            <article><strong>联合索引</strong><p>按查询过滤、排序、选择性和覆盖需求设计，不机械追求单列高选择性。</p></article>
+            <article><strong>MVCC</strong><p>版本链配合 Read View 提供一致性读，当前读仍会读最新版本并可能加锁。</p></article>
+            <article><strong>日志分工</strong><p>undo 支持回滚与多版本，redo 保证崩溃恢复，binlog 用于复制与归档恢复。</p></article>
+            <article><strong>慢 SQL</strong><p>先确认业务语义和真实参数，再看执行计划、扫描行数、回表、排序、临时表、锁等待和 I/O。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>一条查询怎样使用索引</h3></div>
+          <div class="btree-visual" aria-label="InnoDB B+ 树索引结构">
+            <div class="btree-level root-level"><span>根节点：键范围与子页指针</span></div>
+            <div class="btree-level branch-level"><span>中间页 A</span><span>中间页 B</span><span>中间页 C</span></div>
+            <div class="btree-level leaf-level"><span>叶子页 1 ⇄</span><span>叶子页 2 ⇄</span><span>叶子页 3</span></div>
+            <p>二级索引叶子：索引列 + 主键；聚簇索引叶子：完整行记录。</p>
+          </div>
+          <article class="concept-block">
+            <h4>最左前缀是排序能力的结果</h4>
+            <p>联合索引 <code>(a, b, c)</code> 先按 a 排，再在相同 a 内按 b 排，最后按 c 排。因此跳过 a 时，全局的 b 并不连续有序。范围条件后的列是否还能用于过滤、排序或索引下推，要结合具体条件和优化器执行计划，不能用一句“范围后全部失效”概括。</p>
+          </article>
+          <article class="concept-block split-concept">
+            <div><h4>覆盖索引减少回表</h4><p>若查询所需列都能从二级索引取得，无需再按主键访问聚簇索引。索引不是越宽越好，宽索引会增加空间、写放大和缓存压力，应以高频关键查询收益为依据。</p></div>
+            <pre><code>-- 常见查询
+SELECT status, amount
+FROM orders
+WHERE user_id = ?
+  AND created_at &gt;= ?
+ORDER BY created_at DESC
+LIMIT 20;
+
+-- 候选索引，仍需用真实数据验证
+INDEX idx_user_time_status_amount
+  (user_id, created_at, status, amount)</code></pre>
+          </article>
+
+          <div class="block-title subsection-title"><span>执行计划</span><h3>从“用了索引”走向“访问成本合理”</h3></div>
+          <div class="explain-checklist">
+            <span>访问类型</span><span>候选与实际 key</span><span>估算 rows</span><span>filtered</span><span>索引长度</span><span>Extra</span><span>实际耗时</span><span>循环次数</span>
+          </div>
+          <p class="diagram-caption"><code>EXPLAIN ANALYZE</code> 会实际执行查询。线上使用前确认语句安全和开销，尤其是写语句或大结果查询。</p>
+
+          <div class="block-title subsection-title"><span>事务与 MVCC</span><h3>快照读和当前读不是一回事</h3></div>
+          <div class="mvcc-visual" aria-label="MVCC 版本可见性">
+            <div><strong>Read View</strong><span>活跃事务集合、边界与创建者</span></div>
+            <b>判断可见性</b>
+            <div class="version-chain"><span>最新版本</span><i>undo</i><span>历史版本 2</span><i>undo</i><span>历史版本 1</span></div>
+          </div>
+          <div class="isolation-table table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>隔离级别</th><th>一致性读快照</th><th>主要现象</th><th>工程备注</th></tr></thead>
+              <tbody>
+                <tr><td>READ COMMITTED</td><td>每次一致性读通常新建</td><td>可能不可重复读</td><td>锁范围通常更收敛，仍需分析当前读</td></tr>
+                <tr><td>REPEATABLE READ</td><td>事务内复用快照</td><td>一致性读可重复</td><td>InnoDB 默认，当前读通过锁处理并发</td></tr>
+                <tr><td>SERIALIZABLE</td><td>更强串行约束</td><td>并发度低</td><td>不是解决所有一致性问题的默认选择</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <article class="concept-block">
+            <h4>锁的对象是索引记录与间隙</h4>
+            <p>InnoDB 常见行级锁包括 record lock、gap lock 和 next-key lock。是否锁表、锁行还是锁范围，取决于访问路径、隔离级别、唯一性和条件命中。没有合适索引可能扫描并锁住更大范围，但不能简单表述为“行锁升级成表锁”。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>持久化</span><h3>一次提交的日志协作</h3></div>
+          <div class="commit-flow" aria-label="InnoDB 与 binlog 提交流程">
+            <span>修改缓冲页与 undo</span><b>→</b><span>写 redo prepare</span><b>→</b><span>写 binlog</span><b>→</b><span>redo commit</span><b>→</b><span>按策略刷盘</span>
+          </div>
+          <article class="concept-block">
+            <h4>两阶段提交解决日志一致性</h4>
+            <p>redo log 属于 InnoDB，binlog 属于 Server 层。若二者独立提交，崩溃可能导致存储状态与复制日志不一致。两阶段提交通过 prepare 与 commit 状态协调恢复判断。具体持久性还受 <code>innodb_flush_log_at_trx_commit</code>、<code>sync_binlog</code> 和硬件缓存影响。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>复制与拆分</span><h3>副本不是自动强一致</h3></div>
+          <div class="replication-flow" aria-label="MySQL 主从复制流程">
+            <span>主库提交 binlog</span><b>→</b><span>副库接收 relay log</span><b>→</b><span>回放事务</span><b>→</b><span>从库可见</span>
+          </div>
+          <p class="diagram-caption">主从延迟下，写后立即读从库可能读不到。可按业务选择读主、会话粘滞、位点等待或接受最终一致。</p>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>索引选择性高不代表一定优先，联合索引顺序还要看等值、范围、排序、覆盖和查询频率。</li><li>查询使用了索引也可能很慢，例如扫描索引大范围、回表很多、随机 I/O 或锁等待。</li><li>RR 不能神奇消除所有业务幻读，先区分快照读、当前读和业务写冲突。</li><li>大分页的 OFFSET 会扫描并丢弃大量记录，可用稳定排序键做 seek 分页。</li><li>分库分表会引入路由、跨分片查询、全局唯一 ID、扩容和分布式事务成本，应先证明单库瓶颈。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>从一条慢 SQL 讲完索引设计、执行计划、MVCC、锁和上线验证，不说“加索引就好”。</p></div>
+          <a href="index.html#mysql">进入 MySQL 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="redis-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">09</span><span class="priority">P1 高频</span></div>
+          <h2>Redis 数据结构、缓存、高可用与锁</h2>
+          <p>Redis 不是“快的 Map”。高分回答要覆盖内存结构、单线程语义、持久化、一致性和故障恢复。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>先按业务模型选结构</h3></div>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>结构</th><th>典型用途</th><th>关键能力</th><th>常见风险</th></tr></thead>
+              <tbody>
+                <tr><td>String</td><td>缓存、计数、位图</td><td>简单值、原子增减、bit 操作</td><td>大 value、热 key、序列化浪费</td></tr>
+                <tr><td>Hash</td><td>对象属性</td><td>字段级读写</td><td>超大 hash 的迁移与删除开销</td></tr>
+                <tr><td>List</td><td>简易队列、时间线</td><td>两端操作</td><td>可靠消费能力有限</td></tr>
+                <tr><td>Set</td><td>去重、关系、共同好友</td><td>集合运算</td><td>大集合计算阻塞与内存</td></tr>
+                <tr><td>ZSet</td><td>排行榜、延迟调度</td><td>按 score 有序与范围查</td><td>分值精度、并列排序和大范围扫描</td></tr>
+                <tr><td>Stream</td><td>持久化消息流</td><td>消费组、确认、待处理列表</td><td>仍需治理堆积、重投与裁剪</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>为什么 Redis 通常很快</h3></div>
+          <div class="redis-speed" aria-label="Redis 性能来源">
+            <span>以内存为主</span><b>+</b><span>高效数据结构</span><b>+</b><span>事件循环减少共享竞争</span><b>+</b><span>多路复用管理连接</span><b>+</b><span>短命令路径</span>
+          </div>
+          <article class="concept-block">
+            <h4>“单线程”需要带版本和范围</h4>
+            <p>Redis 核心命令执行通常由主事件线程串行处理，因此单条命令具有自然原子性并减少锁竞争。但网络 I/O、持久化、异步释放等工作可由其他线程或子进程处理，现代版本还可配置 I/O 线程。长命令仍会阻塞核心事件循环。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>缓存</span><h3>Cache Aside 的一致性边界</h3></div>
+          <div class="cache-aside" aria-label="旁路缓存读写流程">
+            <div><strong>读路径</strong><span>读缓存</span><b>未命中</b><span>读数据库</span><b>回填</b><span>返回</span></div>
+            <div><strong>写路径</strong><span>更新数据库</span><b>成功后</b><span>删除缓存</span><b>下次读取</b><span>重新构建</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>为什么常用“更新数据库后删除缓存”</h4>
+            <p>直接更新缓存容易遗漏不同查询维度，并发写也可能让旧值覆盖新值。先更新数据库再删除缓存通常让数据库成为事实源，但删除失败、并发读回填旧值和主从延迟仍会造成短暂不一致。可按业务容忍度增加重试队列、订阅 binlog、版本号或延迟双删，但没有零成本强一致。</p>
+          </article>
+          <div class="cache-failures">
+            <article><h4>穿透</h4><p>大量查询不存在数据。做参数校验、空值短缓存、布隆过滤器和请求治理。</p></article>
+            <article><h4>击穿</h4><p>热 key 失效后大量请求回源。做互斥重建、逻辑过期、提前刷新和热点隔离。</p></article>
+            <article><h4>雪崩</h4><p>大量 key 同时过期或节点故障。过期时间加抖动、分级缓存、限流降级和容量冗余。</p></article>
+            <article><h4>热 key / 大 key</h4><p>单点流量或大对象阻塞。发现后拆分、复制读、local cache、分片及渐进删除。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>内存与持久化</span><h3>过期、淘汰、RDB 与 AOF</h3></div>
+          <div class="comparison-grid">
+            <article><h4>过期删除</h4><p>惰性删除在访问时处理，定期删除抽样扫描。过期键不一定到点瞬间物理消失。</p></article>
+            <article><h4>内存淘汰</h4><p>达到 maxmemory 后按配置从特定范围选键淘汰，如 LRU、LFU、随机、TTL 或禁止写入。</p></article>
+            <article><h4>RDB / AOF</h4><p>RDB 是时间点快照，恢复快但可能丢最近窗口；AOF 记录写命令，数据更细但文件与重写成本更高，可组合使用。</p></article>
+          </div>
+          <article class="concept-block">
+            <h4>淘汰策略必须匹配业务</h4>
+            <p>若 Redis 同时存缓存和不可丢状态，统一的 maxmemory 淘汰会让语义混乱。更稳妥的是实例或集群隔离，并为缓存设置 TTL。选择 allkeys-lfu 或 LRU 等策略时，要用真实访问分布验证，而不是只背策略名。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>高可用</span><h3>Sentinel 与 Cluster</h3></div>
+          <div class="ha-compare">
+            <article><h4>主从 + Sentinel</h4><p>主从复制提供副本，Sentinel 做监控、主观与客观下线判断、选主和通知。数据仍主要在一个主节点容量范围内。</p></article>
+            <article><h4>Redis Cluster</h4><p>16384 个槽分布在多个主节点，客户端按槽路由，故障时副本接管。多 key 操作受槽位约束，可用 hash tag 控制同槽。</p></article>
+          </div>
+          <p class="diagram-caption">异步复制意味着故障切换窗口内可能丢失已向客户端确认但尚未复制的写入，不能把高可用等同于零数据丢失。</p>
+
+          <div class="block-title subsection-title"><span>分布式锁</span><h3>从互斥到 fencing token</h3></div>
+          <div class="lock-flow" aria-label="Redis 单实例锁基本流程">
+            <span><code>SET key token NX PX ttl</code></span><b>临界区</b><span>Lua 比较 token 后删除</span><b>超时风险</b><span>续期或业务幂等</span><b>更强保护</b><span>fencing token</span>
+          </div>
+          <article class="concept-block">
+            <h4>锁过期后，旧持有者可能继续写</h4>
+            <p>线程长时间停顿或网络分区时，租约已过期，新客户端获得锁，而旧客户端恢复后仍可能操作下游。只有随机 token 能防止误删别人的锁，不能阻止旧持有者写。对强一致资源，应由下游比较单调递增 fencing token，拒绝旧世代请求，或使用具备一致性语义的协调系统。</p>
+          </article>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li><code>KEYS</code>、大范围集合运算和超大 Lua 脚本可能阻塞事件循环，线上优先渐进扫描并控制单次工作量。</li><li>Redis 事务提供命令顺序执行，不提供关系数据库式回滚；WATCH 是乐观并发控制。</li><li>缓存命中率高不代表健康，还要看回源峰值、热 key、淘汰、延迟和内存碎片。</li><li>本地缓存降低网络开销，但引入多实例失效传播与更复杂的一致性窗口。</li><li>分布式锁不能替代数据库唯一约束、幂等键和状态机，优先让最终写入具备自我保护。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>设计一个热点参数缓存，说明一致性窗口、击穿保护、淘汰策略、故障切换与锁超时风险。</p></div>
+          <a href="index.html#redis">进入 Redis 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="mq-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">10</span><span class="priority">P0 核心</span></div>
+          <h2>Kafka、RocketMQ 与消息可靠性</h2>
+          <p>消息队列的价值是解耦、异步和削峰，代价是引入重复、延迟、积压、顺序和一致性问题。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>一条消息的三段可靠性</h3></div>
+          <div class="message-reliability" aria-label="消息端到端可靠性">
+            <div><span>生产者</span><strong>确认、重试、幂等</strong><small>防发送丢失与重复</small></div><b>→</b>
+            <div><span>Broker</span><strong>副本、刷盘、选主</strong><small>防节点故障与数据丢失</small></div><b>→</b>
+            <div><span>消费者</span><strong>处理成功后提交</strong><small>失败重试、幂等、死信</small></div>
+          </div>
+          <div class="quick-grid">
+            <article><strong>至少一次</strong><p>允许重复以换取不轻易丢失，业务消费必须幂等，是最常见的工程选择。</p></article>
+            <article><strong>至多一次</strong><p>先确认后处理，失败可能丢，适合允许采样丢失的非关键数据。</p></article>
+            <article><strong>恰好一次</strong><p>必须说明范围。Broker 内事务语义不自动让数据库与外部副作用端到端恰好一次。</p></article>
+            <article><strong>顺序</strong><p>通常只能保证分区或队列内顺序，需要相同业务键路由到同一分区并控制并发消费。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>Kafka 的日志模型</h3></div>
+          <div class="kafka-layout" aria-label="Kafka topic、partition 与消费组">
+            <div class="partition-list"><strong>Topic</strong><span>P0: 0 · 1 · 2 · 3 · 4</span><span>P1: 0 · 1 · 2 · 3</span><span>P2: 0 · 1 · 2 · 3 · 4 · 5</span></div>
+            <b>分区分配</b>
+            <div class="consumer-group"><strong>Consumer Group</strong><span>C1 ← P0</span><span>C2 ← P1</span><span>C3 ← P2</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>分区同时决定并行度、顺序范围和迁移成本</h4>
+            <p>同一消费组内，一个分区同一时刻通常只由一个消费者实例负责，因此有效并行度不超过分区数。分区过少限制吞吐，过多增加元数据、文件、选主和 rebalance 成本。扩分区后 key 的映射可能变化，不能默认继续维持跨扩容前后的全局业务顺序。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>生产端</span><h3>确认和幂等是组合配置</h3></div>
+          <div class="producer-path" aria-label="Kafka 生产者发送流程">
+            <span>序列化</span><b>→</b><span>选择分区</span><b>→</b><span>批量缓冲</span><b>→</b><span>发送 leader</span><b>→</b><span>副本确认</span><b>→</b><span>回调结果</span>
+          </div>
+          <article class="concept-block">
+            <h4>acks=all 也不是孤立的绝对保证</h4>
+            <p>它要求当前同步副本集合满足确认条件，但耐故障能力还受副本因子、最小同步副本数、禁止不干净选主、超时和重试影响。生产者幂等通过 producer id 与序列号抑制重试造成的分区内重复，但业务跨系统副作用仍需业务幂等。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>消费端</span><h3>offset 提交时机决定丢失或重复窗口</h3></div>
+          <div class="offset-compare">
+            <article><h4>先提交，后处理</h4><p>处理前 offset 已前移，进程崩溃会跳过未完成消息，表现为至多一次。</p></article>
+            <article><h4>先处理，后提交</h4><p>处理完成前崩溃会再次拉取，表现为至少一次，需要幂等。</p></article>
+            <article><h4>批量拉取</h4><p>要协调单条失败、部分成功与 offset 边界，避免整批无限重放或错误跳过。</p></article>
+          </div>
+          <article class="concept-block">
+            <h4>幂等消费的四种落点</h4>
+            <p>可以利用数据库唯一键拒绝重复创建，用消息 ID 建消费记录表，在同一数据库事务内更新业务与幂等表，或把业务状态设计成只允许合法迁移。仅用 Redis setnx 记录“处理过”会引入 Redis 与数据库双写一致性，需要分析失败顺序。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>RocketMQ</span><h3>面向业务消息的能力</h3></div>
+          <div class="comparison-grid">
+            <article><h4>普通与顺序消息</h4><p>按 sharding key 将同一业务序列发往同一队列，并对该队列顺序消费。热点键会形成单队列瓶颈。</p></article>
+            <article><h4>延迟与重试</h4><p>适合超时关闭、重试调度等场景，但精度、级别或实现随版本变化，需要查目标版本文档。</p></article>
+            <article><h4>事务消息</h4><p>半消息、执行本地事务、提交或回滚，Broker 对未知状态回查。回查逻辑必须幂等且能根据本地事实判断。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>故障治理</span><h3>消息积压排查</h3></div>
+          <div class="backlog-playbook">
+            <div><strong>1. 量化</strong><span>积压量、增长速率、最老消息年龄、消费耗时、失败率</span></div>
+            <div><strong>2. 定位</strong><span>生产突增、消费者故障、下游慢、热点分区、rebalance、毒消息</span></div>
+            <div><strong>3. 止血</strong><span>限流生产、降级非关键逻辑、隔离毒消息、临时扩容并确认分区足够</span></div>
+            <div><strong>4. 恢复</strong><span>按业务优先级追平，监控数据库和下游，避免扩容把压力下推</span></div>
+            <div><strong>5. 复盘</strong><span>容量水位、自动扩缩、失败隔离、重放工具和演练</span></div>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>不能只说“MQ 保证不丢”，必须分别说明生产、Broker、消费三段和可接受的失败窗口。</li><li>增加消费者不一定提速，分区数、热点分区、下游容量和单条处理时长可能才是瓶颈。</li><li>自动提交 offset 容易让提交位置与业务处理完成脱节，关键消费要明确提交语义。</li><li>无限重试会造成头部阻塞和故障放大，应有退避、最大次数、死信与人工恢复通道。</li><li>消息体应小而稳定，大对象可存对象存储后传引用，但要处理引用有效期和一致性。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>从生产到消费讲清“不丢、不重、顺序、积压”，并指出每个保证的范围和代价。</p></div>
+          <a href="index.html#mq">进入 MQ 训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="network-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">11</span><span class="priority">P1 高频</span></div>
+          <h2>TCP、HTTP、Linux、IO 多路复用与 Netty</h2>
+          <p>网络题的主线是数据如何从用户代码经过协议栈到达另一端，以及慢在哪里、丢在哪里。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>从连接到请求</h3></div>
+          <div class="request-stack" aria-label="网络请求分层">
+            <span>应用：HTTP / RPC</span><b>↓</b><span>传输：TCP / QUIC</span><b>↓</b><span>网络：IP</span><b>↓</b><span>链路：以太网 / Wi-Fi</span>
+          </div>
+          <div class="quick-grid">
+            <article><strong>三次握手</strong><p>双方确认彼此收发能力并同步初始序列号，两次不足以可靠确认双向状态。</p></article>
+            <article><strong>四次挥手</strong><p>TCP 全双工，两方向关闭可独立发生；主动关闭方常进入 TIME_WAIT。</p></article>
+            <article><strong>可靠传输</strong><p>序列号、确认、重传、校验、滑动窗口和拥塞控制共同工作，不等于应用处理成功。</p></article>
+            <article><strong>epoll</strong><p>让线程等待大量 fd 的就绪事件，避免为每个连接阻塞一个平台线程。</p></article>
+            <article><strong>HTTP/2</strong><p>二进制分帧、单连接多路复用和头部压缩，仍可能受 TCP 层丢包影响。</p></article>
+            <article><strong>Netty</strong><p>EventLoop 处理事件，Pipeline 串联 Handler，ByteBuf 管理缓冲，业务阻塞任务要隔离。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>TCP 建连与关闭</h3></div>
+          <div class="tcp-sequence" aria-label="TCP 三次握手与四次挥手">
+            <div class="endpoint"><strong>客户端</strong><span>SYN_SENT</span><span>ESTABLISHED</span><span>FIN_WAIT</span><span>TIME_WAIT</span></div>
+            <div class="packets"><span>SYN →</span><span>← SYN + ACK</span><span>ACK →</span><i>传输数据</i><span>FIN →</span><span>← ACK</span><span>← FIN</span><span>ACK →</span></div>
+            <div class="endpoint"><strong>服务端</strong><span>LISTEN</span><span>SYN_RCVD</span><span>ESTABLISHED</span><span>CLOSE_WAIT</span><span>CLOSED</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>TIME_WAIT 和 CLOSE_WAIT 分别说明什么</h4>
+            <p>TIME_WAIT 常出现在主动关闭方，用于处理迟到报文并确保最终 ACK 可重传，大量出现要结合短连接、端口范围和连接复用判断，不应直接删除。CLOSE_WAIT 表示对端已关闭而本端应用尚未 close，大量长期存在通常要检查代码资源释放或阻塞路径。</p>
+          </article>
+          <article class="concept-block">
+            <h4>流量控制与拥塞控制</h4>
+            <p>接收窗口保护接收端缓冲能力，拥塞窗口保护网络路径。实际可发送窗口受两者共同限制。丢包、RTT 和拥塞算法会影响吞吐，带宽高但 RTT 大的链路也需要足够窗口才能跑满。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>HTTP</span><h3>协议演进解决不同瓶颈</h3></div>
+          <div class="http-versions table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>版本</th><th>连接与并发</th><th>主要改进</th><th>主要边界</th></tr></thead>
+              <tbody>
+                <tr><td>HTTP/1.1</td><td>持久连接，常用多连接并发</td><td>成熟简单</td><td>同连接管线化限制与头部冗余</td></tr>
+                <tr><td>HTTP/2</td><td>单 TCP 连接多路复用</td><td>二进制帧、HPACK、流优先级</td><td>TCP 丢包会影响连接内多个流</td></tr>
+                <tr><td>HTTP/3</td><td>基于 QUIC 的独立流</td><td>减少传输层队头阻塞，握手更快</td><td>UDP 网络环境、实现和运维复杂度</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <article class="concept-block">
+            <h4>HTTPS 多了什么</h4>
+            <p>TLS 在应用数据传输前协商协议版本、密码套件和密钥，并通过证书链验证服务端身份。握手使用非对称能力建立共享秘密，后续主要用高效对称加密保护机密性与完整性。证书校验还涉及主机名、有效期、信任链和吊销状态。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>I/O</span><h3>多路复用只解决“等待谁就绪”</h3></div>
+          <div class="io-multiplex" aria-label="epoll 工作方式">
+            <div class="fd-set"><span>fd 1</span><span>fd 2</span><span>fd 3</span><span>fd n</span></div><b>注册关注事件</b>
+            <div class="epoll-box"><strong>epoll</strong><span>维护关注集合与就绪列表</span></div><b>返回就绪项</b>
+            <div class="event-loop-box">事件循环逐个处理</div>
+          </div>
+          <p class="diagram-caption">就绪后 read / write 的业务处理仍由应用完成。若处理器执行慢 SQL 或长计算，事件循环照样被阻塞。</p>
+
+          <div class="block-title subsection-title"><span>Netty</span><h3>Reactor 与 Pipeline</h3></div>
+          <div class="netty-architecture" aria-label="Netty 线程与处理链">
+            <div><strong>Boss EventLoopGroup</strong><span>接收连接，注册 Channel</span></div><b>→</b>
+            <div><strong>Worker EventLoopGroup</strong><span>处理读写就绪事件</span></div><b>→</b>
+            <div><strong>ChannelPipeline</strong><span>解码 → 业务 → 编码</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>一个 Channel 通常绑定一个 EventLoop</h4>
+            <p>同一 Channel 的事件由固定 EventLoop 串行处理，降低并发控制复杂度。若 Handler 在 EventLoop 中执行阻塞调用，会拖慢同一线程管理的其他 Channel。应把不可避免的阻塞工作投递到专用有界执行器，并建立水位与拒绝策略。</p>
+          </article>
+          <article class="concept-block">
+            <h4>粘包拆包是字节流边界问题</h4>
+            <p>TCP 提供有序字节流，不保留应用消息边界。协议需使用固定长度、分隔符、长度字段或自描述格式完成帧解码。Netty 的解码器负责累积半包并拆出完整帧，还要设置最大帧长防止恶意或异常长度耗尽内存。</p>
+          </article>
+
+          <div class="linux-toolbox">
+            <div><strong>连接</strong><code>ss -s</code><code>ss -antp</code></div>
+            <div><strong>进程</strong><code>top -H -p PID</code><code>pidstat -p PID 1</code></div>
+            <div><strong>磁盘</strong><code>iostat -xz 1</code><code>df -h</code></div>
+            <div><strong>网络</strong><code>sar -n DEV 1</code><code>tcpdump</code></div>
+            <div><strong>文件</strong><code>lsof -p PID</code><code>ulimit -n</code></div>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>TCP 可靠只表示字节按协议交付，不代表远端业务事务已提交，应用仍需确认与幂等。</li><li>连接超时、读超时、请求总超时含义不同，超时预算要按调用链分配。</li><li>零拷贝通常是减少用户态与内核态间复制或上下文切换的统称，具体机制要说 sendfile、mmap 或 Direct Buffer。</li><li>ByteBuf 引用计数使用错误会造成内存泄漏或非法访问，谁 retain 谁 release 要有清晰所有权。</li><li>网络故障排查先分 DNS、建连、TLS、首包、传输和应用处理阶段，不要只用 ping 下结论。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>从浏览器请求讲到 Netty Handler，解释 TIME_WAIT、HTTP/2、多路复用和事件循环阻塞。</p></div>
+          <a href="index.html#network">进入网络训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="distributed-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">12</span><span class="priority">P1 进阶</span></div>
+          <h2>RPC、服务治理、幂等与分布式事务</h2>
+          <p>分布式系统没有免费的可靠性。每多一次远程调用，就多一组超时、重试、重复和部分失败。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>远程调用的完整成本</h3></div>
+          <div class="rpc-path" aria-label="RPC 调用链">
+            <span>动态代理</span><b>→</b><span>序列化</span><b>→</b><span>服务发现</span><b>→</b><span>负载均衡</span><b>→</b><span>网络传输</span><b>→</b><span>服务执行</span><b>→</b><span>反序列化</span>
+          </div>
+          <div class="quick-grid">
+            <article><strong>超时</strong><p>限制等待时间并释放资源，是所有远程调用必须显式设置的失败边界。</p></article>
+            <article><strong>重试</strong><p>只对瞬时错误和幂等操作，在剩余预算内退避重试，避免多层放大。</p></article>
+            <article><strong>限流</strong><p>保护入口或资源容量，可按 QPS、并发数、租户或优先级执行。</p></article>
+            <article><strong>熔断</strong><p>失败率或慢调用达到阈值后短路，半开探测恢复，防止持续压垮依赖。</p></article>
+            <article><strong>隔离</strong><p>用线程池、信号量、连接池或实例划分故障域，避免一个依赖拖死全部请求。</p></article>
+            <article><strong>幂等</strong><p>同一业务意图重复执行，结果与执行一次等价。需要稳定业务键与原子状态保护。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>服务发现与负载均衡</h3></div>
+          <div class="service-discovery" aria-label="服务注册发现流程">
+            <span>服务实例注册与心跳</span><b>→</b><span>注册中心维护实例</span><b>→</b><span>客户端订阅变更</span><b>→</b><span>本地列表负载均衡</span><b>→</b><span>健康检查与摘除</span>
+          </div>
+          <article class="concept-block">
+            <h4>注册中心不可用时为什么还能调用</h4>
+            <p>成熟客户端通常保留本地缓存的实例列表，让控制面短暂故障不影响数据面已有调用。但缓存可能过期，已下线实例仍被访问，因此还需要请求超时、被动失败摘除和恢复探测。注册中心只负责“去哪调用”，不替代调用可靠性治理。</p>
+          </article>
+          <div class="lb-table table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>策略</th><th>优点</th><th>适用边界</th></tr></thead>
+              <tbody>
+                <tr><td>轮询 / 随机</td><td>简单、分布均匀</td><td>默认认为实例能力接近</td></tr>
+                <tr><td>加权</td><td>表达机器或灰度能力差异</td><td>权重需要更新与验证</td></tr>
+                <tr><td>最少活跃</td><td>倾向当前负担低的实例</td><td>指标延迟与请求成本差异会误导</td></tr>
+                <tr><td>一致性哈希</td><td>业务键稳定映射，节点变化迁移较少</td><td>热点键仍可能热点，需要虚拟节点与拆分</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="block-title subsection-title"><span>稳定性</span><h3>超时、重试和退避</h3></div>
+          <div class="retry-amplification" aria-label="多层重试放大">
+            <span>入口重试 3 次</span><b>×</b><span>服务 A 重试 3 次</span><b>×</b><span>服务 B 重试 3 次</span><b>=</b><strong>最多 27 次下游尝试</strong>
+          </div>
+          <article class="concept-block">
+            <h4>重试必须消耗同一总预算</h4>
+            <p>若请求总预算 500ms，上游不能给每一跳都配置 500ms。要扣除已用时间，为下游、重试间隔和返回预留预算。重试使用指数退避加随机抖动，避免故障恢复时同步洪峰。对写操作先证明幂等，对明确业务失败不要重试。</p>
+          </article>
+          <div class="governance-loop" aria-label="服务治理闭环">
+            <span>限流拒绝超量</span><b>→</b><span>隔离控制故障域</span><b>→</b><span>超时结束等待</span><b>→</b><span>熔断失败依赖</span><b>→</b><span>降级返回可接受结果</span><b>→</b><span>探测恢复</span>
+          </div>
+
+          <div class="block-title subsection-title"><span>幂等</span><h3>业务唯一键加状态机</h3></div>
+          <div class="idempotency-flow" aria-label="幂等请求处理">
+            <span>客户端生成 requestId</span><b>→</b><span>服务端原子占位</span><b>→</b><span>执行业务事务</span><b>→</b><span>记录结果</span><b>重复请求</b><span>返回同一结果或当前状态</span>
+          </div>
+          <article class="concept-block">
+            <h4>“防重复提交”不等于完整幂等</h4>
+            <p>前端按钮置灰只能减少正常用户重复点击，无法处理网络重试、消息重投和恶意请求。服务端应选择稳定业务键，通过数据库唯一约束、条件更新、幂等记录或状态机原子保护，并定义“处理中”请求如何等待、查询或恢复。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>分布式事务</span><h3>按业务约束选择一致性方案</h3></div>
+          <div class="transaction-options table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>方案</th><th>一致性与机制</th><th>代价</th><th>适合场景</th></tr></thead>
+              <tbody>
+                <tr><td>XA / 2PC</td><td>协调多资源准备与提交</td><td>阻塞、协调器与资源支持、吞吐成本</td><td>参与资源可控且强一致优先</td></tr>
+                <tr><td>TCC</td><td>Try 预留，Confirm 确认，Cancel 补偿</td><td>业务侵入，空回滚、悬挂、幂等</td><td>资源预留语义清晰的核心交易</td></tr>
+                <tr><td>Saga</td><td>本地事务序列加补偿动作</td><td>中间状态可见，补偿不总能恢复原状</td><td>长事务与跨服务流程</td></tr>
+                <tr><td>事务消息</td><td>本地事实与消息最终一致</td><td>回查、重复和消费幂等</td><td>异步下游状态传播</td></tr>
+                <tr><td>Outbox</td><td>业务数据与事件同库事务写入</td><td>事件投递器、清理与延迟</td><td>数据库为事实源的可靠事件发布</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <article class="concept-block">
+            <h4>补偿不是数据库回滚</h4>
+            <p>业务补偿可能面对外部世界已经观察到的结果，例如短信已发送、价格已变化或第三方已受理。补偿动作必须幂等，支持重试和人工介入，并在状态机中保留审计轨迹。设计前先问业务能否接受中间态和最终一致窗口。</p>
+          </article>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>RPC 看起来像本地方法但绝不是本地调用，接口设计要显式面对超时、版本和部分失败。</li><li>健康检查通过不等于服务可承载流量，预热、依赖连接和缓存加载可能尚未完成。</li><li>熔断阈值不能照抄，窗口、最小请求量、慢调用定义和恢复探测都要结合流量。</li><li>最终一致不是“不管”，必须有状态查询、重试、对账、告警和人工修复闭环。</li><li>分布式事务方案越强通常耦合和可用性成本越高，先缩小原子边界再选工具。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>设计一个支付回调接口，讲清幂等键、状态机、超时重试、消息投递和对账修复。</p></div>
+          <a href="index.html#distributed">进入分布式训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="stability-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">13</span><span class="priority">P1 进阶</span></div>
+          <h2>稳定性、可观测性、发布、容量与容灾</h2>
+          <p>稳定性不是“系统不报错”，而是能定义目标、发现偏差、控制故障并持续恢复。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>稳定性的四个层次</h3></div>
+          <div class="stability-layers">
+            <article><span>看得见</span><h4>可观测性</h4><p>指标发现趋势，日志解释事件，链路定位跨服务路径，三者用统一标识关联。</p></article>
+            <article><span>扛得住</span><h4>容量与治理</h4><p>容量模型、限流、隔离、超时、熔断、降级和背压保护关键资源。</p></article>
+            <article><span>发得稳</span><h4>变更控制</h4><p>自动化检查、灰度、指标对比、快速回滚和配置审计降低变更风险。</p></article>
+            <article><span>救得回</span><h4>容灾与应急</h4><p>备份恢复、故障切换、预案、演练与复盘确保出问题后可恢复。</p></article>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入原理</span><h3>从 SLI 到 SLO</h3></div>
+          <div class="slo-chain" aria-label="稳定性目标关系">
+            <span>用户期望</span><b>定义</b><span>SLI 指标</span><b>设定</b><span>SLO 目标</span><b>计算</b><span>错误预算</span><b>约束</b><span>发布与治理节奏</span>
+          </div>
+          <article class="concept-block">
+            <h4>可用率必须定义成功和观察窗口</h4>
+            <p>“99.9% 可用”需要明确分母是什么请求、哪些返回算成功、窗口是一月还是滚动 30 天、计划维护是否计入，以及按请求还是按时间计算。错误预算把可靠性目标转成可消费额度，消耗过快时应减缓高风险变更并优先稳定性工作。</p>
+          </article>
+          <div class="golden-signals">
+            <div><strong>Latency</strong><span>区分成功与失败请求，关注 P95 / P99 而非只看平均</span></div>
+            <div><strong>Traffic</strong><span>QPS、并发、消息速率、数据量与业务维度</span></div>
+            <div><strong>Errors</strong><span>技术错误、业务失败、超时、降级与数据不一致</span></div>
+            <div><strong>Saturation</strong><span>CPU、队列、连接池、线程池、磁盘、内存等水位</span></div>
+          </div>
+
+          <div class="block-title subsection-title"><span>可观测性</span><h3>Metrics、Logs、Traces 各司其职</h3></div>
+          <div class="observability-model" aria-label="可观测性三支柱">
+            <article><h4>指标</h4><p>低成本聚合，适合告警、趋势与容量。高基数标签会造成存储和查询压力。</p></article>
+            <article><h4>日志</h4><p>记录离散上下文与审计事实。结构化、分级、脱敏，并控制体积与保留周期。</p></article>
+            <article><h4>链路</h4><p>串联跨服务 span，观察调用树与关键耗时。采样要兼顾成本和异常保留。</p></article>
+          </div>
+          <article class="concept-block">
+            <h4>告警应该指向行动</h4>
+            <p>优先对用户影响或 SLO 燃烧率告警，再用资源指标辅助定位。每个告警要有严重级别、责任人、运行手册和抑制规则。CPU 瞬时高但无用户影响可能只需观察；成功率持续下降必须立即行动。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>容量</span><h3>从流量、延迟和资源估算</h3></div>
+          <div class="capacity-formulas">
+            <code>平均 QPS = 日请求量 / 86400</code>
+            <code>峰值 QPS = 平均 QPS × 峰值系数</code>
+            <code>并发量 ≈ 吞吐 × 平均响应时间</code>
+            <code>所需实例 ≈ 峰值 QPS / 单实例安全 QPS × 冗余系数</code>
+          </div>
+          <article class="concept-block">
+            <h4>单实例安全 QPS 来自压测拐点</h4>
+            <p>逐步增加压力，观察吞吐是否继续增长、P99 是否陡升、错误是否出现、CPU 与队列是否饱和。容量基线应低于拐点并预留故障副本和流量突增空间。压测数据、数据分布、缓存命中和下游环境必须接近生产，否则估算只是假设。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>发布</span><h3>让每次变更可观察、可停止、可回退</h3></div>
+          <div class="release-flow" aria-label="安全发布流程">
+            <span>构建与测试</span><b>→</b><span>制品不可变</span><b>→</b><span>小流量灰度</span><b>→</b><span>关键指标对比</span><b>→</b><span>逐步放量</span><b>异常</b><span>自动停止或回滚</span>
+          </div>
+          <div class="release-compare">
+            <article><h4>滚动发布</h4><p>逐批替换实例，资源需求低。新旧版本共存，接口与数据结构需向前向后兼容。</p></article>
+            <article><h4>蓝绿发布</h4><p>两套完整环境切换，回退快，但资源成本高，数据库变更仍需独立处理。</p></article>
+            <article><h4>金丝雀发布</h4><p>先给少量实例、用户或流量，比较核心指标。流量分群与样本量会影响判断。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>容灾</span><h3>RPO 与 RTO 是业务选择</h3></div>
+          <div class="dr-axis" aria-label="容灾指标">
+            <div><strong>RPO</strong><span>最多可接受丢失多少时间范围的数据</span></div>
+            <div><strong>故障发生</strong><span>检测、决策、切换、验证</span></div>
+            <div><strong>RTO</strong><span>最多可接受多久恢复服务</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>备份只有恢复演练后才可信</h4>
+            <p>需要定期验证备份可读、恢复耗时、依赖配置、密钥、数据一致性和业务校验。多活架构还要解决流量路由、写冲突、数据同步和故障回切，复杂度远高于“多部署一套”。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>应急</span><h3>线上事故处理顺序</h3></div>
+          <div class="incident-timeline">
+            <div><strong>发现</strong><span>确认影响范围与开始时间</span></div><b>→</b>
+            <div><strong>止血</strong><span>回滚、降级、限流、切流</span></div><b>→</b>
+            <div><strong>定位</strong><span>用变更与证据验证假设</span></div><b>→</b>
+            <div><strong>恢复</strong><span>逐步放量并校验数据</span></div><b>→</b>
+            <div><strong>复盘</strong><span>根因、促成因素、行动项</span></div>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>平均延迟会掩盖长尾，面向 SLA 必须看分位数、错误和超时分布。</li><li>日志不是越多越好，敏感数据泄露、高基数与磁盘写放大会反过来制造事故。</li><li>自动扩容存在检测和启动滞后，不能替代限流、预热和基础冗余。</li><li>数据库 schema 变更要采用 expand、migrate、contract 等兼容阶段，应用回滚不一定能回滚数据。</li><li>复盘要分析系统和流程促成因素，不以寻找个人责任结束，并为行动项设负责人和期限。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>为一个核心交易接口定义 SLI、SLO、告警、容量基线、灰度规则和容灾目标。</p></div>
+          <a href="index.html#distributed">进入稳定性训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="system-design-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">14</span><span class="priority">P1 冲刺</span></div>
+          <h2>系统设计方法与典型系统</h2>
+          <p>系统设计面不是猜标准架构，而是在约束下做可解释、可演进、可验证的选择。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>45 分钟七步法</h3></div>
+          <div class="design-steps" aria-label="系统设计七步法">
+            <div><strong>01</strong><span>澄清需求</span><small>核心用例、非目标、质量要求</small></div>
+            <div><strong>02</strong><span>容量估算</span><small>QPS、并发、存储、带宽</small></div>
+            <div><strong>03</strong><span>接口与模型</span><small>API、实体、状态机、幂等键</small></div>
+            <div><strong>04</strong><span>高层架构</span><small>请求流、数据流、同步与异步</small></div>
+            <div><strong>05</strong><span>核心深挖</span><small>索引、缓存、消息、一致性</small></div>
+            <div><strong>06</strong><span>故障与治理</span><small>限流、降级、容灾、观测</small></div>
+            <div><strong>07</strong><span>演进与取舍</span><small>瓶颈、替代方案、下一阶段</small></div>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入方法</span><h3>先问问题，不要立刻画中间件</h3></div>
+          <div class="clarifying-questions">
+            <article><h4>功能</h4><p>谁使用？读写主路径是什么？需要搜索、排序、推荐、通知或审计吗？</p></article>
+            <article><h4>规模</h4><p>日活、峰值 QPS、数据增长、对象大小、读写比、热点分布和地域范围？</p></article>
+            <article><h4>质量</h4><p>延迟、可用性、一致性、顺序、数据保留、合规和成本目标？</p></article>
+            <article><h4>约束</h4><p>已有技术栈、团队能力、交付时间、第三方依赖、迁移与兼容要求？</p></article>
+          </div>
+
+          <article class="concept-block">
+            <h4>容量估算示例只是一组假设</h4>
+            <p>假设某系统日请求量 1 亿、峰值系数 5、平均响应 100ms，则平均 QPS 约 1157，峰值约 5787，并发请求约 579。若压测得到单实例安全承载 300 QPS，按 1.5 冗余系数估算约 29 个实例。面试中必须先说“这是待确认假设”，再用结果指导连接池、缓存和分片，而不是把数字当事实。</p>
+          </article>
+          <div class="estimation-line"><code>1 亿 / 86400 ≈ 1157 QPS</code><span>→</span><code>峰值 ≈ 5787 QPS</code><span>→</span><code>并发 ≈ 579</code><span>→</span><code>实例 ≈ 29</code></div>
+
+          <div class="block-title subsection-title"><span>架构画法</span><h3>同时画请求路径和数据事实源</h3></div>
+          <div class="architecture-canvas" aria-label="通用高层架构">
+            <div class="arch-entry"><span>客户端</span><span>CDN / 网关</span></div>
+            <b>→</b>
+            <div class="arch-service"><strong>无状态应用服务</strong><span>鉴权、编排、限流、幂等</span></div>
+            <div class="arch-data"><span>缓存：加速读</span><span>数据库：事实源</span><span>消息：异步传播</span><span>对象存储：大对象</span></div>
+            <div class="arch-observe"><span>日志</span><span>指标</span><span>链路</span><span>告警</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>先做最小可行架构，再按瓶颈演进</h4>
+            <p>单体应用加主数据库可能已足够支撑早期规模。只有当证据表明容量、隔离、团队边界或交付速度受限时，再引入缓存、读副本、消息、分片和微服务。直接画复杂架构会暴露你没有讨论一致性和运维成本。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>典型题</span><h3>五类系统的核心矛盾</h3></div>
+          <div class="system-patterns">
+            <article><span>短链系统</span><h4>读多写少与唯一映射</h4><p>短码生成、冲突处理、重定向低延迟、热点缓存、过期和防滥用。</p></article>
+            <article><span>信息流</span><h4>写扩散还是读扩散</h4><p>关注关系、时间线排序、大 V 热点、分页游标、删除传播和混合策略。</p></article>
+            <article><span>秒杀</span><h4>峰值削减与库存正确</h4><p>资格校验、限流、库存预扣、队列削峰、幂等下单、超时释放和对账。</p></article>
+            <article><span>支付 / 交易</span><h4>状态机与可审计一致性</h4><p>请求幂等、资金状态、回调、消息、补偿、对账、风险控制和审计。</p></article>
+            <article><span>评论 / 点赞</span><h4>高频写与计数一致性</h4><p>关系唯一性、热内容、计数聚合、排序、敏感内容审核和延迟容忍。</p></article>
+            <article><span>任务调度</span><h4>时间触发与重复执行</h4><p>分片、抢占、租约、故障转移、幂等、重试、依赖 DAG 和执行历史。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>秒杀示例</span><h3>用不变量驱动设计</h3></div>
+          <div class="seckill-flow" aria-label="秒杀系统流程">
+            <span>CDN 静态化</span><b>→</b><span>网关限流与资格</span><b>→</b><span>原子预扣库存</span><b>→</b><span>消息排队</span><b>→</b><span>幂等创建订单</span><b>→</b><span>支付或超时关闭</span><b>→</b><span>补偿与对账</span>
+          </div>
+          <div class="invariants">
+            <div><strong>库存不超卖</strong><span>原子扣减或条件更新，最终以事实源校验</span></div>
+            <div><strong>一人一单</strong><span>业务唯一键加数据库唯一约束</span></div>
+            <div><strong>消息可恢复</strong><span>重试、幂等、死信、状态查询与对账</span></div>
+            <div><strong>系统可退化</strong><span>排队中、售罄、稍后查询均是明确产品状态</span></div>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>没有容量估算就谈分库分表，无法说明为什么需要和分多少。</li><li>只画正常流程，不讨论超时、重复、部分失败、热点、数据修复和降级。</li><li>把缓存、数据库和消息都当事实源，却没有定义冲突时谁说了算。</li><li>为了“高可用”加入大量组件，却没有说明团队能否运维、监控和演练。</li><li>设计题应主动总结取舍与下一瓶颈，让面试官看到判断过程而不是组件清单。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>用七步法在 45 分钟内完成秒杀或支付系统，至少做一次容量估算并说出三项不变量。</p></div>
+          <a href="index.html#design">进入系统设计训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="algorithm-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">15</span><span class="priority">P0 必须</span></div>
+          <h2>算法、复杂度与 Java 编码模板</h2>
+          <p>算法面考察的不只是最终 AC，还包括澄清、建模、复杂度、边界和可运行代码。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>做题五步法</h3></div>
+          <div class="coding-steps" aria-label="算法面流程">
+            <span>复述输入输出与边界</span><b>→</b><span>说暴力解法</span><b>→</b><span>识别重复计算或数据结构</span><b>→</b><span>编码并口述</span><b>→</b><span>样例、极端值、复杂度</span>
+          </div>
+          <div class="pattern-index">
+            <span>数组：双指针 / 滑窗 / 前缀和</span><span>查找：二分</span><span>链表：快慢指针 / 反转</span><span>树图：DFS / BFS / 拓扑</span><span>选择：堆</span><span>连通：并查集</span><span>最优子结构：DP</span><span>缓存：哈希 + 双向链表</span>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>深入方法</span><h3>复杂度先看增长，再看实现常数</h3></div>
+          <div class="complexity-order" aria-label="常见时间复杂度增长顺序">
+            <span>O(1)</span><b>&lt;</b><span>O(log n)</span><b>&lt;</b><span>O(n)</span><b>&lt;</b><span>O(n log n)</span><b>&lt;</b><span>O(n²)</span><b>&lt;</b><span>O(2ⁿ)</span>
+          </div>
+          <article class="concept-block">
+            <h4>空间复杂度要算辅助空间和递归栈</h4>
+            <p>原地算法通常指额外空间 O(1)，但递归深度、返回结果和输入修改约束需要单独说明。哈希表换时间往往合理，但要估算键数量和对象开销。面试中先给数量级，再指出 Java 实现中的装箱、递归栈和集合常数成本。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>高频模板</span><h3>二分与滑动窗口</h3></div>
+          <div class="code-pair">
+            <article><h4>左边界二分</h4><pre><code>static int lowerBound(int[] a, int target) {
+    int left = 0, right = a.length;
+    while (left &lt; right) {
+        int mid = left + (right - left) / 2;
+        if (a[mid] &lt; target) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}</code></pre><p>维护区间 <code>[left, right)</code>，循环结束时 left 是首个不小于 target 的位置。</p></article>
+            <article><h4>无重复最长子串</h4><pre><code>static int longestUnique(String s) {
+    Map&lt;Character, Integer&gt; last = new HashMap&lt;&gt;();
+    int left = 0, answer = 0;
+    for (int right = 0; right &lt; s.length(); right++) {
+        char ch = s.charAt(right);
+        if (last.containsKey(ch)) {
+            left = Math.max(left, last.get(ch) + 1);
+        }
+        last.put(ch, right);
+        answer = Math.max(answer, right - left + 1);
+    }
+    return answer;
+}</code></pre><p>窗口内保持字符不重复，left 只能向右，整体 O(n)。</p></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>树与图</span><h3>BFS、DFS 与拓扑</h3></div>
+          <div class="algorithm-compare table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>问题信号</th><th>常用方法</th><th>关键状态</th><th>易错点</th></tr></thead>
+              <tbody>
+                <tr><td>无权最短步数、分层</td><td>BFS</td><td>队列、visited、层数</td><td>入队时标记，避免重复入队</td></tr>
+                <tr><td>枚举路径、子树信息</td><td>DFS</td><td>递归参数、返回值、回溯</td><td>深图栈溢出，状态恢复</td></tr>
+                <tr><td>依赖顺序、课程安排</td><td>拓扑排序</td><td>入度、邻接表、队列</td><td>输出数不足说明有环</td></tr>
+                <tr><td>动态连通与合并</td><td>并查集</td><td>parent、rank / size</td><td>路径压缩与合并策略</td></tr>
+                <tr><td>Top K</td><td>大小为 K 的堆</td><td>比较器、堆顶语义</td><td>大顶堆小顶堆选反</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-pair">
+            <article><h4>BFS 骨架</h4><pre><code>Queue&lt;Node&gt; queue = new ArrayDeque&lt;&gt;();
+Set&lt;Node&gt; visited = new HashSet&lt;&gt;();
+queue.offer(start);
+visited.add(start);
+
+while (!queue.isEmpty()) {
+    Node current = queue.poll();
+    for (Node next : current.neighbors()) {
+        if (visited.add(next)) {
+            queue.offer(next);
+        }
+    }
+}</code></pre></article>
+            <article><h4>Top K 骨架</h4><pre><code>PriorityQueue&lt;Integer&gt; minHeap =
+    new PriorityQueue&lt;&gt;();
+
+for (int value : values) {
+    minHeap.offer(value);
+    if (minHeap.size() &gt; k) {
+        minHeap.poll();
+    }
+}</code></pre></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>动态规划</span><h3>先定义状态，再写转移</h3></div>
+          <div class="dp-method">
+            <div><strong>1. 状态</strong><span><code>dp[i]</code> 或 <code>dp[i][j]</code> 精确表示什么</span></div>
+            <div><strong>2. 选择</strong><span>到当前状态有哪些最后一步</span></div>
+            <div><strong>3. 转移</strong><span>如何从已知较小状态得到当前状态</span></div>
+            <div><strong>4. 初值</strong><span>空输入、首行首列和不可达状态</span></div>
+            <div><strong>5. 顺序</strong><span>保证依赖状态已经计算，判断能否压缩空间</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>LRU 是数据结构组合题</h4>
+            <p>HashMap 提供 O(1) 定位，双向链表提供 O(1) 删除与移动。get 时把节点移到最近使用端，put 时更新或插入，超容量淘汰最久未使用端。Java 可用 LinkedHashMap 快速实现，但面试若要求手写，需要自己维护头尾哨兵、size 和边界。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>Java 实战</span><h3>编码前后检查</h3></div>
+          <div class="coding-checks">
+            <span>空数组 / null 约定</span><span>单元素</span><span>重复值</span><span>负数与零</span><span>整数溢出</span><span>比较器溢出</span><span>循环区间</span><span>递归深度</span><span>输入是否允许修改</span><span>复杂度</span>
+          </div>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>易错点与工程边界</h3>
+          <ul><li>比较器不要简单返回 <code>a - b</code>，可能整数溢出，使用 Integer.compare。</li><li>需要队列时优先 ArrayDeque，LinkedList 对象开销更大；PriorityQueue 不是线程安全队列。</li><li>深度可能达到十万时递归 DFS 可能栈溢出，改显式栈或确认约束。</li><li>二分最容易错在区间定义，先声明闭区间或左闭右开，并让初始化、条件和更新一致。</li><li>卡住时先说暴力解法与瓶颈，面试官更容易判断思路，也便于逐步优化。</li></ul>
+        </aside>
+
+        <div class="chapter-exit">
+          <div><strong>本章验收</strong><p>限时 30 分钟完成一道中等题，全程口述区间、不变量、边界和复杂度，并手动跑三个样例。</p></div>
+          <a href="index.html#algorithm">进入算法训练</a>
+        </div>
+      </section>
+
+      <section class="review-chapter" id="project-review">
+        <header class="chapter-header">
+          <div><span class="chapter-number">16</span><span class="priority">P0 决胜</span></div>
+          <h2>项目深挖、简历追问与行为面</h2>
+          <p>项目不是背故事。面试官会验证你的职责、证据、技术判断、协作和复盘是否一致。</p>
+        </header>
+
+        <div class="quick-review">
+          <div class="block-title"><span>10 分钟速读</span><h3>一个项目要准备六层</h3></div>
+          <div class="project-layers">
+            <div><strong>业务</strong><span>系统解决什么问题，核心流程和 SLA 是什么</span></div>
+            <div><strong>职责</strong><span>你负责的边界、决策和协作对象</span></div>
+            <div><strong>架构</strong><span>请求、数据、依赖、部署与故障域</span></div>
+            <div><strong>难点</strong><span>为什么难，替代方案与选择依据</span></div>
+            <div><strong>结果</strong><span>基线、目标、变化、验证方式与持续时间</span></div>
+            <div><strong>反思</strong><span>风险、遗留问题、如果重做会如何改</span></div>
+          </div>
+        </div>
+
+        <div class="deep-dive">
+          <div class="block-title"><span>事实基线</span><h3>当前可用项目材料</h3></div>
+          <div class="fact-ledger table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>经历</th><th>已知事实</th><th>面试前必须核实</th></tr></thead>
+              <tbody>
+                <tr><td>信用卡分布式核心</td><td>负责授权相关模块，参与接口性能、慢 SQL、缓存、请求内数据复用与代码走查</td><td>原始耗时口径、QPS、P99、四层依赖图、线程池与连接池、数据库类型</td></tr>
+                <tr><td>性能结果</td><td>目标中快捷 8583 交易不超过 200ms，其余接口不超过 300ms；用户自述上线后约 100ms 与 200ms 内</td><td>是平均、P95 还是 P99，压测或生产口径，样本窗口，相关改动贡献拆分</td></tr>
+                <tr><td>信用卡前置 OOM</td><td>夜间容器重启，GC 与内存异常，日志发送 buffer 堆积，调整策略后恢复</td><td>OOM 的具体进程、组件准确名称与版本、对象类型、Dump 引用链、确认模式与丢日志风险</td></tr>
+                <tr><td>信创与流水线</td><td>参与前置系统信创和生产自动化部署</td><td>迁移范围、兼容难点、灰度回滚、质量门禁、效率变化和个人推动行为</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <aside class="evidence-note"><strong>事实规则</strong><p>没有证据的数字不要补写。无法确认时说清“当时记录需要核实”，用确认过的目标、动作和定性结果回答，可信度比夸大更重要。</p></aside>
+
+          <div class="block-title subsection-title"><span>STAR 进阶</span><h3>从流水账到技术决策</h3></div>
+          <div class="star-advanced" aria-label="STAR 项目表达结构">
+            <div><strong>S</strong><span>业务场景、影响范围、约束与基线</span></div>
+            <div><strong>T</strong><span>你的职责、目标与成功标准</span></div>
+            <div><strong>A</strong><span>证据链、方案对比、决策、实施与风险控制</span></div>
+            <div><strong>R</strong><span>结果口径、验证方式、稳定周期、沉淀与反思</span></div>
+          </div>
+          <article class="concept-block">
+            <h4>两分钟项目回答骨架</h4>
+            <p>前 20 秒讲业务与约束，20 秒讲你的职责，60 秒讲最关键的诊断、选择和落地，20 秒讲可核实结果与反思。技术动作不要罗列成“加缓存、加索引、并行化”，要说明每个动作解决哪个指标、为什么不是其他方案、如何防止副作用。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>故事一</span><h3>授权链路性能优化</h3></div>
+          <div class="story-map" aria-label="性能优化故事证据链">
+            <span>SLA 与耗时分解</span><b>→</b><span>查询依赖图</span><b>→</b><span>无依赖查询并行</span><b>+</b><span>请求内只查一次</span><b>+</b><span>稳定参数缓存</span><b>+</b><span>慢 SQL 治理</span><b>→</b><span>同口径验证</span>
+          </div>
+          <div class="story-detail">
+            <article><h4>面试版主述</h4><p>我负责信用卡核心授权相关模块，交易链路有明确耗时目标。我们先按 SQL、下游和应用处理拆分耗时。我梳理查询间的数据依赖，将无依赖查询按层并行，同时在一次请求内复用已查数据，避免多个模块重复访问同一张表；对变化少的参数数据使用缓存；再结合慢 SQL 清单检查分区或分片条件、索引、回表和返回字段。上线结果只使用已核实的统计口径说明。</p></article>
+            <article><h4>连续追问</h4><ul><li>为什么是四层，依赖图如何画？</li><li>并行后数据库连接和下游 QPS 增加多少？</li><li>超时、部分失败和取消如何处理？</li><li>缓存更新、过期和一致性如何做？</li><li>执行计划前后分别是什么？</li><li>如何证明结果来自这些改动？</li></ul></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>故事二</span><h3>容器 OOM 排障</h3></div>
+          <div class="story-map" aria-label="OOM 排障故事证据链">
+            <span>夜间容器重启</span><b>→</b><span>确认 OOM 与进程</span><b>→</b><span>GC 趋势</span><b>→</b><span>对象 / native 内存</span><b>→</b><span>日志 buffer 增长</span><b>→</b><span>验证组件策略</span><b>→</b><span>修复与监控</span>
+          </div>
+          <div class="story-detail">
+            <article><h4>面试版主述</h4><p>信用卡前置系统出现夜间容器重启。排查时先确认容器退出原因和具体进程，再结合 GC 趋势判断内存回收是否有效，通过对象分布或 Heap Dump 缩小持有者范围，并把时间线与日志文件、发送 buffer 增长对齐，最终定位到日志发送确认策略导致消费或确认速度跟不上。修复后继续观察重启、内存水位、GC 和日志积压，并补充 OOM 自动 Dump 与趋势告警。</p></article>
+            <article><h4>必须纠正的表达</h4><ul><li><code>jstat</code> 看到 Full GC 只能说明高内存压力，不能单独证明内存泄漏。</li><li><code>jmap -heap</code> 不能直接证明某个大对象为何存活，需要引用链证据。</li><li>“无需确认也不会丢日志”是过度承诺，要说明缓冲、重试、丢失窗口和审计日志通道。</li><li>先核实是业务 JVM、日志 sidecar 还是宿主进程 OOM，命令链必须与进程类型一致。</li></ul></article>
+          </div>
+
+          <div class="block-title subsection-title"><span>简历追问</span><h3>每一行都按五问准备</h3></div>
+          <div class="resume-five">
+            <span>为什么做</span><span>你具体做什么</span><span>为什么这样选</span><span>失败会怎样</span><span>结果如何证明</span>
+          </div>
+          <article class="concept-block">
+            <h4>职级感来自范围与判断，不来自堆术语</h4>
+            <p>2-1 目标要稳定展示独立交付、扎实原理和可靠问题处理。冲刺 2-2 还需在复杂问题中展示方案取舍、跨团队推动、风险控制、沉淀复用和更大影响范围。这里是训练标准，不是字节跳动公开职级规则。</p>
+          </article>
+
+          <div class="block-title subsection-title"><span>行为面</span><h3>90 秒自我介绍与六类问题</h3></div>
+          <div class="self-intro-flow" aria-label="自我介绍结构">
+            <span>当前定位与年限</span><b>→</b><span>两个最强项目结果</span><b>→</b><span>技术能力主线</span><b>→</b><span>岗位匹配与动机</span>
+          </div>
+          <div class="behavior-prompts">
+            <article><h4>主动发现问题</h4><p>突出没有人明确指派时，你如何发现、判断价值、推动并沉淀机制。</p></article>
+            <article><h4>失败与错误判断</h4><p>说明当时依据、忽略信号、止损、责任和后来怎样更新决策流程。</p></article>
+            <article><h4>冲突与协作</h4><p>对齐共同目标，用数据验证分歧，明确最终决策，不把同事描述成阻碍。</p></article>
+            <article><h4>高压与优先级</h4><p>量化影响，区分止血和根治，明确必须阻断的安全红线与可接受妥协。</p></article>
+            <article><h4>为什么换工作</h4><p>围绕成长方向、业务复杂度和岗位匹配，不攻击原团队，不虚构宏大叙事。</p></article>
+            <article><h4>反问面试官</h4><p>询问团队当前挑战、岗位成功标准、工程实践和入职前三个月期望。</p></article>
+          </div>
+
+          <article class="concept-block">
+            <h4>自我介绍事实骨架</h4>
+            <p>我有 3 年 Java 后端经验，主要参与信用卡分布式核心系统和信用卡前置系统。在核心系统中负责授权相关模块，做过交易链路性能优化、慢 SQL 治理、参数缓存和代码走查；在前置系统中参与过容器 OOM 排障、生产自动化流水线和信创改造。我比较擅长从监控、运行时和数据访问链路定位性能与稳定性问题，希望在更高并发和更复杂业务场景中继续提升系统设计与工程治理能力。具体数字需在使用前替换为已核实口径。</p>
+          </article>
+        </div>
+
+        <aside class="pitfalls">
+          <h3>表达红线</h3>
+          <ul><li>不说“把数据库性能拉到最高”“完全不会丢”“所有 SQL 都走索引”等绝对话。</li><li>不把团队共同成果全部写成个人完成，明确自己决策、实施和协作的边界。</li><li>不只讲成功动作，要主动说明风险、替代方案、上线保护和复盘。</li><li>不背诵过长稿件，准备 30 秒、2 分钟和 5 分钟三个粒度，并允许面试官打断。</li><li>不会的问题先澄清和推理，不编造源码细节、内部规则或未经确认的项目数据。</li></ul>
+        </aside>
+
+        <div class="chapter-exit dual-exit">
+          <div><strong>本章验收</strong><p>完成 90 秒自我介绍、两个 2 分钟项目故事，并对每个故事承受至少六轮连续追问。</p></div>
+          <div><a href="index.html#project">进入项目训练</a><a href="index.html#behavior">进入行为面训练</a></div>
+        </div>
+      </section>
+
+      <section class="review-sources" id="official-sources">
+        <div class="section-heading">
+          <p class="kicker">版本与边界</p>
+          <h2>权威资料与使用声明</h2>
+          <p>复习册以 Java 8 常见生产知识为主线，并补充 Java 17 / 21。实现细节与默认配置可能随版本变化，面试前请按目标技术栈复核。</p>
+        </div>
+        <div class="source-columns">
+          <div><h3>Java 与 JVM</h3><a href="https://docs.oracle.com/en/java/javase/21/" target="_blank" rel="noreferrer">Oracle Java 21 文档</a><a href="https://openjdk.org/jeps/395" target="_blank" rel="noreferrer">JEP 395：Records</a><a href="https://openjdk.org/jeps/409" target="_blank" rel="noreferrer">JEP 409：Sealed Classes</a><a href="https://openjdk.org/jeps/440" target="_blank" rel="noreferrer">JEP 440：Record Patterns</a><a href="https://openjdk.org/jeps/441" target="_blank" rel="noreferrer">JEP 441：Pattern Matching for switch</a><a href="https://openjdk.org/jeps/444" target="_blank" rel="noreferrer">JEP 444：Virtual Threads</a></div>
+          <div><h3>框架与数据库</h3><a href="https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative.html" target="_blank" rel="noreferrer">Spring 声明式事务</a><a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-storage-engine.html" target="_blank" rel="noreferrer">MySQL 8.4 InnoDB</a><a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html" target="_blank" rel="noreferrer">InnoDB 事务隔离级别</a><a href="https://redis.io/docs/latest/" target="_blank" rel="noreferrer">Redis 官方文档</a><a href="https://redis.io/docs/latest/develop/reference/eviction/" target="_blank" rel="noreferrer">Redis 内存淘汰</a><a href="https://redis.io/docs/latest/develop/clients/patterns/distributed-locks/" target="_blank" rel="noreferrer">Redis 分布式锁</a></div>
+          <div><h3>消息与网络</h3><a href="https://kafka.apache.org/documentation/" target="_blank" rel="noreferrer">Apache Kafka 文档</a><a href="https://rocketmq.apache.org/docs/" target="_blank" rel="noreferrer">Apache RocketMQ 文档</a><a href="https://netty.io/wiki/user-guide-for-4.x.html" target="_blank" rel="noreferrer">Netty 4.x 用户指南</a></div>
+        </div>
+        <p class="source-disclaimer">本材料根据公开技术资料和你的项目陈述整理，不代表字节跳动官方题库或职级标准。训练台中的分数和等级仅用于个人复习验收。</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="review-footer">
+    <strong>Java 面试复习册</strong>
+    <p>先理解，后闭卷，再追问。</p>
+    <div><a href="index.html">进入训练台</a><button class="print-button" type="button" id="print-page">打印复习册</button></div>
+  </footer>
+</body>
+</html>
