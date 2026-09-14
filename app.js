@@ -2,6 +2,7 @@
   "use strict";
 
   const storageKey = "java-interview-workbench-v1";
+  const readingPositionKey = "java-interview-reading-position-workbench-v1";
   const moduleIds = [
     "java",
     "jvm",
@@ -50,6 +51,7 @@
 
   let state = loadState();
   let toastTimer = null;
+  let positionSaveTimer = null;
 
   function defaultState() {
     return {
@@ -221,6 +223,103 @@
     });
   }
 
+  function currentSectionId() {
+    const sections = Array.from(document.querySelectorAll("main > section[id]"));
+    const topbar = document.querySelector(".topbar");
+    const readingLine = window.scrollY + (topbar ? topbar.offsetHeight : 0) + 24;
+    let current = sections[0] || null;
+
+    sections.forEach(function (section) {
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      if (sectionTop <= readingLine) {
+        current = section;
+      }
+    });
+
+    return current ? current.id : "";
+  }
+
+  function saveReadingPosition() {
+    window.clearTimeout(positionSaveTimer);
+    positionSaveTimer = null;
+
+    try {
+      window.localStorage.setItem(readingPositionKey, JSON.stringify({
+        scrollY: Math.max(0, Math.round(window.scrollY)),
+        sectionId: currentSectionId()
+      }));
+    } catch (error) {
+      return;
+    }
+  }
+
+  function scheduleReadingPositionSave() {
+    if (positionSaveTimer !== null) {
+      return;
+    }
+
+    positionSaveTimer = window.setTimeout(saveReadingPosition, 400);
+  }
+
+  function loadReadingPosition() {
+    try {
+      const raw = window.localStorage.getItem(readingPositionKey);
+      if (!raw) {
+        return null;
+      }
+
+      const position = JSON.parse(raw);
+      if (!Number.isFinite(position.scrollY) || position.scrollY < 0) {
+        return null;
+      }
+
+      return {
+        scrollY: position.scrollY,
+        sectionId: typeof position.sectionId === "string" ? position.sectionId : ""
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function restoreReadingPosition() {
+    if (window.location.hash) {
+      return;
+    }
+
+    const position = loadReadingPosition();
+    if (!position) {
+      return;
+    }
+
+    window.requestAnimationFrame(function () {
+      const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const section = position.sectionId ? document.getElementById(position.sectionId) : null;
+      if (position.scrollY <= maxScrollY || section) {
+        const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = "auto";
+
+        if (position.scrollY <= maxScrollY) {
+          window.scrollTo(0, position.scrollY);
+        } else {
+          section.scrollIntoView({ block: "start" });
+        }
+
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      }
+    });
+  }
+
+  function initializeReadingPosition() {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    window.addEventListener("scroll", scheduleReadingPositionSave, { passive: true });
+    window.addEventListener("pagehide", saveReadingPosition);
+    restoreReadingPosition();
+  }
+
   function renderTodayTask() {
     const dayIndex = Math.floor(Date.now() / 86400000) % dailyTasks.length;
     const task = dailyTasks[dayIndex];
@@ -247,6 +346,7 @@
     bindMasteryButtons();
     bindNavigation();
     observeSections();
+    initializeReadingPosition();
 
     elements.themeToggle.addEventListener("click", cycleTheme);
     elements.resetProgress.addEventListener("click", resetProgress);
